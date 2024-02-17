@@ -1,15 +1,15 @@
 package rsocketmessagingservice.boundaries;
 
-public class ExtrenalReferenceBoundary {
+public class ExternalReferenceBoundary {
     private String service;
     private String extrenalServiceId;
 
-    public ExtrenalReferenceBoundary(String service, String extrenalServiceId) {
+    public ExternalReferenceBoundary(String service, String extrenalServiceId) {
         this.service = service;
         this.extrenalServiceId = extrenalServiceId;
     }
 
-    public ExtrenalReferenceBoundary() {
+    public ExternalReferenceBoundary() {
     }
 
     public String getService() {
@@ -30,7 +30,7 @@ public class ExtrenalReferenceBoundary {
 
     @Override
     public String toString() {
-        return "ExtrenalReferenceBoundary{" +
+        return "ExternalReferenceBoundary{" +
                 "service='" + service + '\'' +
                 ", extrenalServiceId='" + extrenalServiceId + '\'' +
                 '}';

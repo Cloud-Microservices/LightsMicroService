@@ -2,7 +2,6 @@ package rsocketmessagingservice.boundaries;
 
 import rsocketmessagingservice.data.MessageEntity;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class MessageBoundary {
@@ -11,7 +10,7 @@ public class MessageBoundary {
     private Date publishedTimestamp;
     private String messageType;
     private String summary;
-    private List<ExtrenalReferenceBoundary> extrenalReferences;
+    private List<ExternalReferenceBoundary> extrenalReferences;
 
     private Map<String, Object> messageDetails;
 
@@ -73,11 +72,11 @@ public class MessageBoundary {
         this.summary = summary;
     }
 
-    public List<ExtrenalReferenceBoundary> getExtrenalReferences() {
+    public List<ExternalReferenceBoundary> getExtrenalReferences() {
         return extrenalReferences;
     }
 
-    public void setExtrenalReferences(List<ExtrenalReferenceBoundary> extrenalReferences) {
+    public void setExtrenalReferences(List<ExternalReferenceBoundary> extrenalReferences) {
         this.extrenalReferences = extrenalReferences;
     }
 

@@ -2,9 +2,8 @@ package rsocketmessagingservice.data;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import rsocketmessagingservice.boundaries.ExtrenalReferenceBoundary;
+import rsocketmessagingservice.boundaries.ExternalReferenceBoundary;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Document(collection = "MESSAGES")
@@ -15,7 +14,7 @@ public class MessageEntity {
     private Date publishedTimestamp;
     private String messageType;
     private String summary;
-    private List<ExtrenalReferenceBoundary> extrenalReferences;
+    private List<ExternalReferenceBoundary> extrenalReferences;
 
     private Map<String,Object> messageDetails;
 
@@ -63,11 +62,11 @@ public class MessageEntity {
         this.summary = summary;
     }
 
-    public List<ExtrenalReferenceBoundary> getExtrenalReferences() {
+    public List<ExternalReferenceBoundary> getExtrenalReferences() {
         return extrenalReferences;
     }
 
-    public void setExtrenalReferences(List<ExtrenalReferenceBoundary> extrenalReferences) {
+    public void setExtrenalReferences(List<ExternalReferenceBoundary> extrenalReferences) {
         this.extrenalReferences = extrenalReferences;
     }
 
