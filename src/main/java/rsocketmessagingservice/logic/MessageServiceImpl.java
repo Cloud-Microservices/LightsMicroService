@@ -2,6 +2,7 @@ package rsocketmessagingservice.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import rsocketmessagingservice.boundaries.MessageBoundary;
 import rsocketmessagingservice.dal.MessageCrud;
@@ -19,13 +20,33 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Mono<MessageBoundary> publish_message(MessageBoundary message) {
+    public Mono<MessageBoundary> publishMessage(MessageBoundary message) {
         message.setMessageId(null);
         message.setPublishedTimestamp(new Date());
         return Mono.just(message)
                 .map(MessageBoundary::toEntity)
                 .flatMap(this.messageCrud::save)
                 .map(MessageBoundary::new);
+    }
+
+    @Override
+    public Flux<MessageBoundary> getAllMessages() {
+        return this.messageCrud
+                .findAll()
+                .map(MessageBoundary::new);
+    }
+
+    @Override
+    public Mono<MessageBoundary> getMessageById(String messageId) {
+        return this.messageCrud
+                .findById(messageId)
+                .map(MessageBoundary::new);
+    }
+
+    @Override
+    public Mono<Void> deleteAllMessages() {
+        return this.messageCrud
+                .deleteAll();
     }
 
 }
