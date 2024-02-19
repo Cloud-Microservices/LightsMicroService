@@ -10,7 +10,7 @@ public class MessageBoundary {
     private Date publishedTimestamp;
     private String messageType;
     private String summary;
-    private List<ExternalReferenceBoundary> extrenalReferences;
+    private List<ExternalReferenceBoundary> externalReferences;
 
     private Map<String, Object> messageDetails;
 
@@ -22,7 +22,7 @@ public class MessageBoundary {
         this.setPublishedTimestamp(entity.getPublishedTimestamp());
         this.setMessageType(entity.getMessageType());
         this.setSummary(entity.getSummary());
-        this.setExtrenalReferences(entity.getExtrenalReferences());
+        this.setExternalReferences(entity.getExtrenalReferences());
         this.setMessageDetails(entity.getMessageDetails());
 
 
@@ -31,7 +31,7 @@ public class MessageBoundary {
     public MessageBoundary(String messageType, String summary) {
         this.messageType = messageType;
         this.summary = summary;
-        this.extrenalReferences = new ArrayList<>();
+        this.externalReferences = new ArrayList<>();
         this.messageDetails = new HashMap<>();
     }
 
@@ -41,7 +41,7 @@ public class MessageBoundary {
         rv.setPublishedTimestamp(this.getPublishedTimestamp());
         rv.setMessageType(this.getMessageType());
         rv.setSummary(this.getSummary());
-        rv.setExtrenalReferences(this.getExtrenalReferences());
+        rv.setExtrenalReferences(this.getExternalReferences());
         rv.setMessageDetails(this.getMessageDetails());
 
 
@@ -72,12 +72,12 @@ public class MessageBoundary {
         this.summary = summary;
     }
 
-    public List<ExternalReferenceBoundary> getExtrenalReferences() {
-        return extrenalReferences;
+    public List<ExternalReferenceBoundary> getExternalReferences() {
+        return externalReferences;
     }
 
-    public void setExtrenalReferences(List<ExternalReferenceBoundary> extrenalReferences) {
-        this.extrenalReferences = extrenalReferences;
+    public void setExternalReferences(List<ExternalReferenceBoundary> externalReferences) {
+        this.externalReferences = externalReferences;
     }
 
     public Map<String, Object> getMessageDetails() {
@@ -103,7 +103,7 @@ public class MessageBoundary {
                 ", publishedTimestamp=" + publishedTimestamp +
                 ", messageType='" + messageType + '\'' +
                 ", summary='" + summary + '\'' +
-                ", extrenalReferences=" + extrenalReferences +
+                ", extrenalReferences=" + externalReferences +
                 ", messageDetails=" + messageDetails +
                 '}';
     }

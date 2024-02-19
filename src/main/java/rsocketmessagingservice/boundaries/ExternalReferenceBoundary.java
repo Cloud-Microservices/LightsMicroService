@@ -2,11 +2,11 @@ package rsocketmessagingservice.boundaries;
 
 public class ExternalReferenceBoundary {
     private String service;
-    private String extrenalServiceId;
+    private String externalServiceId;
 
-    public ExternalReferenceBoundary(String service, String extrenalServiceId) {
+    public ExternalReferenceBoundary(String service, String externalServiceId) {
         this.service = service;
-        this.extrenalServiceId = extrenalServiceId;
+        this.externalServiceId = externalServiceId;
     }
 
     public ExternalReferenceBoundary() {
@@ -20,19 +20,19 @@ public class ExternalReferenceBoundary {
         this.service = service;
     }
 
-    public String getExtrenalServiceId() {
-        return extrenalServiceId;
+    public String getExternalServiceId() {
+        return externalServiceId;
     }
 
-    public void setExtrenalServiceId(String extrenalServiceId) {
-        this.extrenalServiceId = extrenalServiceId;
+    public void setExternalServiceId(String externalServiceId) {
+        this.externalServiceId = externalServiceId;
     }
 
     @Override
     public String toString() {
         return "ExternalReferenceBoundary{" +
                 "service='" + service + '\'' +
-                ", extrenalServiceId='" + extrenalServiceId + '\'' +
+                ", externalServiceId='" + externalServiceId + '\'' +
                 '}';
     }
 }
