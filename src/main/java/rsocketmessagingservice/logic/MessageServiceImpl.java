@@ -49,4 +49,14 @@ public class MessageServiceImpl implements MessageService {
                 .deleteAll();
     }
 
+    @Override
+    public Flux<MessageBoundary> getMessagesByExternalReference(String service, String externalServiceId) {
+        return this.messageCrud
+                .findAll()
+                .filter(message -> message.getExtrenalReferences().stream()
+                        .anyMatch(ref -> ref.getService().equals(service) && ref.getExternalServiceId().equals(externalServiceId)))
+                .map(MessageBoundary::new);
+    }
+
+
 }

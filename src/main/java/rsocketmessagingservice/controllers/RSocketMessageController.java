@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import rsocketmessagingservice.boundaries.ExternalReferenceBoundary;
 import rsocketmessagingservice.boundaries.IdBoundary;
 import rsocketmessagingservice.boundaries.MessageBoundary;
 import rsocketmessagingservice.logic.MessageService;
@@ -70,5 +71,20 @@ public class RSocketMessageController {
         this.logger.debug("invoking: deleteAll-fire-and-forget");
         return messages.deleteAllMessages();
     }
+
+
+    /*
+    java -jar rsc-0.9.1.jar --channel --route=getMessagesByExternalReferences-channel --data=- --debug tcp://localhost:7001
+    {"service":"TestService","externalServiceId":"123"}
+    {"service":"AnotherService","externalServiceId":"456"}
+     */
+    @MessageMapping("getMessagesByExternalReferences-channel")
+    public Flux<MessageBoundary> getMessagesByExternalReferences(Flux<ExternalReferenceBoundary> externalRefs) {
+        this.logger.debug("invoking: getMessagesByExternalReferences-channel");
+        return externalRefs
+                .flatMap(ref -> this.messages.getMessagesByExternalReference(ref.getService(), ref.getExternalServiceId()))
+                .distinct();
+    }
+
 
 }

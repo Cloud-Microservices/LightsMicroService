@@ -9,6 +9,7 @@ import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import rsocketmessagingservice.boundaries.ExternalReferenceBoundary;
 import rsocketmessagingservice.boundaries.IdBoundary;
 import rsocketmessagingservice.boundaries.MessageBoundary;
 
@@ -67,9 +68,6 @@ public class RSocketClientMessageController {
     }
 
     // Testing 'getMessagesByIds-channel'
-
-
-
     @GetMapping(path = "/getByIds", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessageBoundary> getMessagesByIds(@RequestParam("ids") List<String> ids) {
         Flux<IdBoundary> idFlux = Flux.fromIterable(ids)
@@ -91,6 +89,26 @@ public class RSocketClientMessageController {
                 .route("deleteAll-fire-and-forget")
                 .send();
     }
+
+    //Testing getMessagesByExternalReferences-channel
+    @GetMapping(path = "/getByExternalReferences", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<MessageBoundary> getMessagesByExternalReferences(@RequestParam("services") List<String> services,
+                                                                 @RequestParam("externalServiceIds") List<String> externalServiceIds) {
+        // Assuming that each service and externalServiceId pair is provided in order
+        Flux<ExternalReferenceBoundary> externalRefsFlux = Flux.zip(
+                Flux.fromIterable(services),
+                Flux.fromIterable(externalServiceIds),
+                ExternalReferenceBoundary::new
+        );
+
+        return this.requester
+                .route("getMessagesByExternalReferences-channel")
+                .data(externalRefsFlux)
+                .retrieveFlux(MessageBoundary.class)
+                .log();
+    }
+
+
 }
 
 
