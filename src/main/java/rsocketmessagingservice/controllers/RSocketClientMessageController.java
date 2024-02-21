@@ -107,11 +107,4 @@ public class RSocketClientMessageController {
                 .retrieveFlux(MessageBoundary.class)
                 .log();
     }
-
-
 }
-
-
-
-
-

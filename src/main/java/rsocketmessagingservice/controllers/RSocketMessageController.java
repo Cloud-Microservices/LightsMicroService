@@ -19,7 +19,6 @@ public class RSocketMessageController {
     private Log logger = LogFactory.getLog(RSocketMessageController.class);
 
     //java -jar rsc-0.9.1.jar --request --route=publish-message-req-resp --data="{\"messageId\":\"msg-1\",\"publishedTimestamp\":\"2022-01-01T12:00:00Z\",\"messageType\":\"TEXT\",\"summary\":\"Test message\",\"externalReferences\":[{\"service\":\"TestService\",\"externalServiceId\":\"123\"}],\"messageDetails\":{\"key1\":\"value1\"}}" --debug tcp://localhost:7001
-
     @Autowired
     public void setMessages(MessageService messages) {
         this.messages = messages;
@@ -31,9 +30,6 @@ public class RSocketMessageController {
 
     }
 
-    /*
-     TODO: Not tested!
-     */
     //java -jar rsc-0.9.1.jar --stream --route=getAll-req-stream --debug tcp://localhost:7001
     @MessageMapping("getAll-req-stream")
     public Flux<MessageBoundary> getAllMessages() {
@@ -43,17 +39,8 @@ public class RSocketMessageController {
 
 
     /*
-     TODO: Works, crashes if not json format
-           The service returns Mono<MessageBoundary> for every messageId,
-           The client expects a Flux<MessageBoundary>
-           Check if it's ok.
-
-     */
-    /*
     java -jar rsc-0.9.1.jar --channel --route=getMessagesByIds-channel --data=- --debug tcp://localhost:7001
-    Input: {"messageId":"65d3158aeaa2d73f54a6cef2"}
-           {"messageId":""}
-    Works, crashes if not json format
+    Input: {"messageId":"65d5e5a08694d3680daa9c19"}
      */
         @MessageMapping("getMessagesByIds-channel")
         public Flux<MessageBoundary> getMessagesByIds(Flux<IdBoundary> ids) {
@@ -62,9 +49,6 @@ public class RSocketMessageController {
                     .flatMap(id -> this.messages.getMessageById(id.getMessageId()));
         }
 
-    /*
-     TODO: Not tested!
-    */
     //java -jar rsc-0.9.1.jar --fnf --route=deleteAll-fire-and-forget --debug tcp://localhost:7001
     @MessageMapping("deleteAll-fire-and-forget")
     public Mono<Void> deleteAllMessages() {
@@ -72,19 +56,16 @@ public class RSocketMessageController {
         return messages.deleteAllMessages();
     }
 
-
     /*
     java -jar rsc-0.9.1.jar --channel --route=getMessagesByExternalReferences-channel --data=- --debug tcp://localhost:7001
-    {"service":"TestService","externalServiceId":"123"}
+    {"service":"abc","externalServiceId":"12345"}
+    {"service":"vsvsf","externalServiceId":"fhnsjls"}
     {"service":"AnotherService","externalServiceId":"456"}
      */
     @MessageMapping("getMessagesByExternalReferences-channel")
     public Flux<MessageBoundary> getMessagesByExternalReferences(Flux<ExternalReferenceBoundary> externalRefs) {
         this.logger.debug("invoking: getMessagesByExternalReferences-channel");
         return externalRefs
-                .flatMap(ref -> this.messages.getMessagesByExternalReference(ref.getService(), ref.getExternalServiceId()))
-                .distinct();
+                .flatMap(ref -> this.messages.getMessagesByExternalReference(ref.getService(), ref.getExternalServiceId()));
     }
-
-
 }
