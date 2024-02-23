@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import rsocketmessagingservice.boundaries.ExternalReferenceBoundary;
 import rsocketmessagingservice.boundaries.IdBoundary;
 import rsocketmessagingservice.boundaries.MessageBoundary;
-
 import java.util.List;
 
 @RestController
@@ -79,8 +78,6 @@ public class RSocketClientMessageController {
                 .retrieveFlux(MessageBoundary.class)
                 .log();
     }
-
-
 
     // Testing 'deleteAll-fire-and-forget'
     @DeleteMapping(path = "/deleteAll")
