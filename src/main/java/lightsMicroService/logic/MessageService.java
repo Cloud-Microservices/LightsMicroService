@@ -1,9 +1,8 @@
-package rsocketmessagingservice.logic;
+package lightsMicroService.logic;
 
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import rsocketmessagingservice.boundaries.MessageBoundary;
+import lightsMicroService.boundaries.MessageBoundary;
 
 public interface MessageService {
     public Mono<MessageBoundary> publishMessage(MessageBoundary message);

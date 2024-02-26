@@ -1,7 +1,8 @@
-package rsocketmessagingservice.controllers;
+package lightsMicroService.controllers;
 
 
 import jakarta.annotation.PostConstruct;
+import lightsMicroService.boundaries.IdBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -9,9 +10,8 @@ import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import rsocketmessagingservice.boundaries.ExternalReferenceBoundary;
-import rsocketmessagingservice.boundaries.IdBoundary;
-import rsocketmessagingservice.boundaries.MessageBoundary;
+import lightsMicroService.boundaries.ExternalReferenceBoundary;
+import lightsMicroService.boundaries.MessageBoundary;
 import java.util.List;
 
 @RestController

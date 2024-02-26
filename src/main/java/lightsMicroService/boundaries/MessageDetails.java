@@ -1,4 +1,4 @@
-package rsocketmessagingservice.boundaries;
+package lightsMicroService.boundaries;
 
 import java.util.HashMap;
 import java.util.Map;

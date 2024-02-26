@@ -1,6 +1,6 @@
-package rsocketmessagingservice.boundaries;
+package lightsMicroService.boundaries;
 
-import rsocketmessagingservice.data.MessageEntity;
+import lightsMicroService.data.MessageEntity;
 
 import java.util.*;
 

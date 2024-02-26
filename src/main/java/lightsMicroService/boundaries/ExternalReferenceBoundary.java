@@ -1,4 +1,4 @@
-package rsocketmessagingservice.boundaries;
+package lightsMicroService.boundaries;
 
 public class ExternalReferenceBoundary {
     private String service;

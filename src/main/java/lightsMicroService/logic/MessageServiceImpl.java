@@ -1,11 +1,11 @@
-package rsocketmessagingservice.logic;
+package lightsMicroService.logic;
 
+import lightsMicroService.dal.MessageCrud;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import rsocketmessagingservice.boundaries.MessageBoundary;
-import rsocketmessagingservice.dal.MessageCrud;
+import lightsMicroService.boundaries.MessageBoundary;
 
 import java.util.Date;
 
