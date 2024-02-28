@@ -1,12 +1,17 @@
 package lightsMicroService.controllers;
+
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
+import lightsMicroService.boundaries.LocationStatusBoundary;
+import lightsMicroService.boundaries.StatusBoundary;
 import lightsMicroService.logic.LightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/lights")
@@ -23,7 +28,7 @@ public class RestLightsController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<LightBoundary> createLight(@RequestBody LightBoundary light) {
-        return lightsService.create(light);
+        return lightsService.createLight(light);
     }
 
     @DeleteMapping("/{id}")
@@ -44,17 +49,26 @@ public class RestLightsController {
     }
 
     @PutMapping(
-            path = "/status/{id}",
+            path = "/status",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<LightStatusBoundary> updateSpecificLightStatus(@PathVariable String id, @RequestBody LightStatusBoundary status) {
-        return lightsService.updateLightStatus(id, status);
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(@RequestBody Mono<LightStatusBoundary> lightStatusBoundary) {
+
+        return lightsService.updateSpecificLightStatus(lightStatusBoundary);
     }
 
-    @PutMapping(path = "/status/location/{location}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<LightStatusBoundary> updateLightsStatusByLocation(@PathVariable String location, @RequestBody LocationStatusBoundary locationStatus) {
-        return lightsService.updateLightsStatusByLocation(location, locationStatus);
+    @PutMapping(path = "/status/all", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<LightStatusBoundary> updateAllLightsStatus(@RequestBody Mono<StatusBoundary> statusBoundary) {
+
+        return lightsService.updateAllLightsStatus(statusBoundary);
     }
+
+    @PutMapping(path = "/status/location", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<LightStatusBoundary> updateLightsStatusByLocation(@RequestBody Mono<LocationStatusBoundary> locationStatus) {
+
+        return lightsService.updateLightsStatusByLocation(locationStatus);
+    }
+
 
     @GetMapping("/{id}")
     public Mono<LightBoundary> getLightById(@PathVariable String id) {
@@ -78,7 +92,7 @@ public class RestLightsController {
 
     @GetMapping("/status/{id}")
     public Mono<LightStatusBoundary> getSpecificLightStatus(@PathVariable String id) {
-        return lightsService.getSpecificLightStatus(id);
+        return lightsService.getSpecificLightsStatus(id);
     }
 }
 

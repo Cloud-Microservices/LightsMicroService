@@ -3,6 +3,7 @@ package lightsMicroService.logic;
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
 import lightsMicroService.boundaries.LocationStatusBoundary;
+import lightsMicroService.boundaries.StatusBoundary;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,13 +15,13 @@ public interface LightsService {
 
     public Mono<Void> deleteAll();
 
-    public Flux<LightBoundary> updateLights(Flux<LightBoundary> lights);
+    public Mono<LightBoundary> updateLight(LightBoundary light);
 
-    public Flux<LightStatusBoundary> updateLightsStatus(Flux<LightStatusBoundary> lightStatus);
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(Mono<LightStatusBoundary> lightStatus);
 
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(Mono<LocationStatusBoundary> updateLocationStatus);
 
-    public Flux<LightStatusBoundary> updateAllLightsStatus(Mono<LightStatusBoundary> lightStatusBoundary);
+    public Flux<LightStatusBoundary> updateAllLightsStatus(Mono<StatusBoundary> statusBoundary);
 
     public Mono<LightBoundary> getLightById(String id);
 

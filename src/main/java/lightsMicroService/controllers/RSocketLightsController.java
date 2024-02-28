@@ -3,6 +3,7 @@ package lightsMicroService.controllers;
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
 import lightsMicroService.boundaries.LocationStatusBoundary;
+import lightsMicroService.boundaries.StatusBoundary;
 import lightsMicroService.logic.LightsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,18 +38,24 @@ public class RSocketLightsController {
         return lightsService.deleteAll();
     }
 
-    @MessageMapping("update-light-channel")
-    public Flux<LightBoundary> updateLights(
-            Flux<LightBoundary> lights) {
+    @MessageMapping("update-light-req-resp")
+    public Mono<LightBoundary> updateLight(
+            @Payload LightBoundary light) {
         this.logger.debug("update-light-channel");
-        return lightsService.updateLights(lights);
+        return lightsService.updateLight(light);
+    }
+    @MessageMapping("update-light-status-all-req-stream")
+    public Flux<LightStatusBoundary> updateAllLightsStatus(
+            Mono<StatusBoundary> statusBoundary) {
+        this.logger.debug("update-light-status-all-req-stream");
+        return lightsService.updateAllLightsStatus(statusBoundary);
     }
 
-    @MessageMapping("update-light-status-specific-channel")
-    public Flux<LightStatusBoundary> updateLightsStatus(
-            Flux<LightStatusBoundary> lightStatus) {
-        this.logger.debug("update-light-status-specific-channel");
-        return lightsService.updateLightsStatus(lightStatus);
+    @MessageMapping("update-light-status-specific-req-resp")
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(
+            Mono<LightStatusBoundary> lightStatus) {
+        this.logger.debug("update-light-status-specific-req-resp");
+        return lightsService.updateSpecificLightStatus(lightStatus);
     }
 
     @MessageMapping("update-light-status-by-location-req-stream")
@@ -58,12 +65,7 @@ public class RSocketLightsController {
         return lightsService.updateLightsStatusByLocation(updateLocationStatus);
     }
 
-    @MessageMapping("update-light-status-all-req-stream")
-    public Flux<LightStatusBoundary> updateAllLightsStatus(
-            Mono<LightStatusBoundary> lightStatusBoundary) {
-        this.logger.debug("update-light-status-all-req-stream");
-        return lightsService.updateAllLightsStatus(lightStatusBoundary);
-    }
+
 
     @MessageMapping("get-light-by-id-req-resp")
     public Mono<LightBoundary> getLightById(String id) {

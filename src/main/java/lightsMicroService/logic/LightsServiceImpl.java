@@ -1,8 +1,11 @@
 package lightsMicroService.logic;
 
+import lightsMicroService.Utils.Validators;
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
 import lightsMicroService.boundaries.LocationStatusBoundary;
+import lightsMicroService.boundaries.StatusBoundary;
+import lightsMicroService.dal.LightsCrud;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -12,11 +15,12 @@ import java.util.Date;
 
 @Service
 public class LightsServiceImpl implements LightsService {
-    private LightsService lightsService;
+    private LightsCrud lightsCrud;
+
 
     @Autowired
-    public void setMessageCrud(LightsService lightsService) {
-        this.lightsService = lightsService;
+    public void setMessageCrud(LightsCrud lightsCrud) {
+        this.lightsCrud = lightsCrud;
     }
 
     @Override
@@ -25,29 +29,49 @@ public class LightsServiceImpl implements LightsService {
         Date date = new Date();
         light.setLastUpdateTimestamp(date);
         light.setRegistrationTimestamp(date);
-        return null;
+        return Mono.just(light.toEntity())
+                .flatMap(this.lightsCrud::save)
+                .map(LightBoundary::new)
+                .log();
 
     }
 
     @Override
     public Mono<Void> deleteLight(String id) {
-        return null;
+        return this.lightsCrud.deleteById(id);
+
     }
 
     @Override
     public Mono<Void> deleteAll() {
-        return null;
+        return this.lightsCrud.deleteAll();
+
     }
 
     @Override
-    public Flux<LightBoundary> updateLights(Flux<LightBoundary> lights) {
+    public Mono<LightBoundary> updateLight(LightBoundary light) {
+        return lightsCrud.findById(light.getId())
+                .flatMap(l -> {
+                    l.setLastUpdateTimestamp(new Date());
+                    if (!light.getAlias().isEmpty())
+                        l.setAlias(light.getAlias());
+                    if (!light.getLightType().isEmpty())
+                        l.setLightType(light.getLightType());
+                    if (!light.getLocation().isEmpty())
+                        l.setLocation(light.getLocation());
+                    return lightsCrud.save(l);
+
+                })
+                .map(LightBoundary::new)
+                .log();
+    }
+
+
+    @Override
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(Mono<LightStatusBoundary> lightStatus) {
         return null;
     }
 
-    @Override
-    public Flux<LightStatusBoundary> updateLightsStatus(Flux<LightStatusBoundary> lightStatus) {
-        return null;
-    }
 
     @Override
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(Mono<LocationStatusBoundary> updateLocationStatus) {
@@ -55,7 +79,7 @@ public class LightsServiceImpl implements LightsService {
     }
 
     @Override
-    public Flux<LightStatusBoundary> updateAllLightsStatus(Mono<LightStatusBoundary> lightStatusBoundary) {
+    public Flux<LightStatusBoundary> updateAllLightsStatus(Mono<StatusBoundary> lightStatusBoundary) {
         return null;
     }
 
@@ -84,3 +108,12 @@ public class LightsServiceImpl implements LightsService {
         return null;
     }
 }
+
+/**
+ * @Override public Mono<Void> deleteLight(String id) {
+ * return this.lightsCrud.deleteById(id);
+ * }
+ * @Override public Mono<Void> deleteAll() {
+ * return this.lightsCrud.deleteAll();
+ * }
+ */

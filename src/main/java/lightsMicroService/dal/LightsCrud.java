@@ -1,8 +1,7 @@
 package lightsMicroService.dal;
 
-import lightsMicroService.boundaries.LightBoundary;
+import lightsMicroService.data.LightEntity;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-//TODO: CHANGE AND CREATE A LIGHT ENTITY
-public interface LightsCrud extends ReactiveMongoRepository<LightBoundary, String> {
+public interface LightsCrud extends ReactiveMongoRepository<LightEntity, String> {
 
 }
