@@ -6,12 +6,12 @@ public class LightStatusEntity {
 
     private String id;
 
-    private StatusBoundary status;
+    private StatusEntity status;
 
     public LightStatusEntity() {
     }
 
-    public LightStatusEntity(String id, StatusBoundary status) {
+    public LightStatusEntity(String id, StatusEntity status) {
         this.id = id;
         this.status = status;
     }
@@ -24,11 +24,11 @@ public class LightStatusEntity {
         this.id = id;
     }
 
-    public StatusBoundary getStatus() {
+    public StatusEntity getStatus() {
         return status;
     }
 
-    public void setStatus(StatusBoundary status) {
+    public void setStatus(StatusEntity status) {
         this.status = status;
     }
 }

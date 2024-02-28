@@ -1,5 +1,8 @@
 package lightsMicroService.boundaries;
 
+import lightsMicroService.data.LightEntity;
+import lightsMicroService.data.LightStatusEntity;
+
 import java.util.Arrays;
 
 public class LightStatusBoundary {
@@ -7,6 +10,19 @@ public class LightStatusBoundary {
     private String id;
 
     private StatusBoundary status;
+
+    public LightStatusBoundary(LightStatusEntity entity) {
+        this.setId(entity.getId());
+        this.setStatus(new StatusBoundary(entity.getStatus()));
+
+    }
+
+    public LightStatusEntity toEntity() {
+        LightStatusEntity rv = new LightStatusEntity();
+        rv.setId(this.getId());
+        rv.setStatus(this.getStatus().toEntity());
+        return rv;
+    }
 
     public LightStatusBoundary() {
 

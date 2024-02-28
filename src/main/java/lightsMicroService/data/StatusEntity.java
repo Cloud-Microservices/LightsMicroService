@@ -1,5 +1,7 @@
 package lightsMicroService.data;
 
+import java.util.Arrays;
+
 public class StatusEntity {
 
     private int brightness;
@@ -10,6 +12,9 @@ public class StatusEntity {
         this.brightness = brightness;
         this.colorRGB = colorRGB;
         this.isOn = isOn;
+    }
+
+    public StatusEntity() {
     }
 
     public int getBrightness() {
@@ -28,11 +33,20 @@ public class StatusEntity {
         this.colorRGB = colorRGB;
     }
 
-    public boolean isOn() {
+    public boolean getIsOn() {
         return isOn;
     }
 
-    public void setOn(boolean on) {
+    public void setIsOn(boolean on) {
         isOn = on;
+    }
+
+    @Override
+    public String toString() {
+        return "StatusEntity{" +
+                "brightness=" + brightness +
+                ", colorRGB=" + Arrays.toString(colorRGB) +
+                ", isOn=" + isOn +
+                '}';
     }
 }

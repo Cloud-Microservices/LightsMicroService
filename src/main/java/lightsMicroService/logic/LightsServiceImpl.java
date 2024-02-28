@@ -25,10 +25,7 @@ public class LightsServiceImpl implements LightsService {
         Date date = new Date();
         light.setLastUpdateTimestamp(date);
         light.setRegistrationTimestamp(date);
-        return Mono.just(message.toEntity())
-                .flatMap(this.messageCrud::save)
-                .map(MessageBoundary::new)
-                .log();
+        return null;
 
     }
 

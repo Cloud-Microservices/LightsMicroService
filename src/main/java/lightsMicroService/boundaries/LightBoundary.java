@@ -1,5 +1,7 @@
 package lightsMicroService.boundaries;
 
+import lightsMicroService.data.LightEntity;
+
 import java.util.Date;
 
 public class LightBoundary {
@@ -15,6 +17,27 @@ public class LightBoundary {
     private Date lastUpdateTimestamp;
 
     private String location;
+
+    public LightBoundary(LightEntity entity) {
+        this.setId(entity.getId());
+        this.setRegistrationTimestamp(entity.getRegistrationTimestamp());
+        this.setLastUpdateTimestamp(entity.getLastUpdateTimestamp());
+        this.setAlias(entity.getAlias());
+        this.setLocation(entity.getLocation());
+        this.setLightType(entity.getLightType());
+    }
+    public LightEntity toEntity() {
+        LightEntity rv = new LightEntity();
+
+        rv.setId(this.getId());
+        rv.setAlias(this.getAlias());
+        rv.setLightType(this.getLightType());
+        rv.setLocation(this.getLocation());
+        rv.setRegistrationTimestamp(this.getRegistrationTimestamp());
+        rv.setLastUpdateTimestamp(this.getLastUpdateTimestamp());
+
+        return rv;
+    }
 
     public LightBoundary() {
     }
@@ -66,6 +89,7 @@ public class LightBoundary {
     public void setLocation(String location) {
         this.location = location;
     }
+
 
     @Override
     public String toString() {

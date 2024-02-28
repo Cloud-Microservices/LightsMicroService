@@ -1,13 +1,29 @@
 package lightsMicroService.boundaries;
 
+import lightsMicroService.data.StatusEntity;
+
 import java.util.Arrays;
 
 public class StatusBoundary {
     private int brightness;
     private int[] colorRGB;
-    private boolean isOn;
+    private Boolean isOn;
 
     public StatusBoundary() {
+    }
+    public StatusBoundary(StatusEntity entity) {
+        this.setBrightness(entity.getBrightness());
+        this.setIsOn(entity.getIsOn());
+        this.setColorRGB(entity.getColorRGB());
+
+    }
+    public StatusEntity toEntity() {
+        StatusEntity rv = new StatusEntity();
+        rv.setBrightness(this.getBrightness());
+        rv.setIsOn(this.getIsOn());
+        rv.setColorRGB(this.getColorRGB());
+        return rv;
+
     }
 
     public StatusBoundary(int brightness, int[] colorRGB, boolean isOn) {
@@ -39,11 +55,11 @@ public class StatusBoundary {
         this.brightness = brightness;
     }
 
-    public boolean isOn() {
+    public boolean getIsOn() {
         return isOn;
     }
 
-    public void setOn(boolean on) {
+    public void setIsOn(boolean on) {
         isOn = on;
     }
 
