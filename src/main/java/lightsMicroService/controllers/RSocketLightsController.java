@@ -21,7 +21,7 @@ public class RSocketLightsController {
     public Mono<LightBoundary> createLight(
             @Payload LightBoundary light) {
         this.logger.debug("create-light-req-resp");
-        return lightsService.create(light);
+        return lightsService.createLight(light);
     }
 
     // java -jar rsc-0.9.1.jar --fnf --route=clear-messages-fnf --debug tcp://localhost:7001

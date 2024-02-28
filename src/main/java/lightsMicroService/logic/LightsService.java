@@ -3,11 +3,12 @@ package lightsMicroService.logic;
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
 import lightsMicroService.boundaries.LocationStatusBoundary;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface LightsService {
-    public Mono<LightBoundary> create(LightBoundary light);
+    public Mono<LightBoundary> createLight(LightBoundary light);
 
     public Mono<Void> deleteLight(String id);
 
