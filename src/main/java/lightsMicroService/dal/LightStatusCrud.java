@@ -1,6 +1,5 @@
 package lightsMicroService.dal;
 
-import lightsMicroService.data.LightEntity;
 import lightsMicroService.data.LightStatusEntity;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 

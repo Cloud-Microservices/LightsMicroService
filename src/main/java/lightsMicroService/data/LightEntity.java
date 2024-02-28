@@ -77,4 +77,16 @@ public class LightEntity {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return "LightEntity{" +
+                "id='" + id + '\'' +
+                ", lightType='" + lightType + '\'' +
+                ", alias='" + alias + '\'' +
+                ", registrationTimestamp=" + registrationTimestamp +
+                ", lastUpdateTimestamp=" + lastUpdateTimestamp +
+                ", location='" + location + '\'' +
+                '}';
+    }
 }

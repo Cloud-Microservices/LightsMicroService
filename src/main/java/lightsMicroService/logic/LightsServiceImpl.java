@@ -36,17 +36,17 @@ public class LightsServiceImpl implements LightsService {
         Date date = new Date();
         light.setLastUpdateTimestamp(date);
         light.setRegistrationTimestamp(date);
-        LightStatusEntity lightStatusEntity = new LightStatusEntity(light.getId(),new StatusEntity(100,new int[]{255,255,255},false));
-        lightStatusCrud.save(lightStatusEntity);
+
         return Mono.just(light.toEntity())
                 .flatMap(this.lightsCrud::save)
+                .flatMap(lightEntity -> {
+                    LightStatusEntity lightStatusEntity = new LightStatusEntity(lightEntity.getId(),new StatusEntity(100,new int[]{255,255,255},false));
+                    return lightStatusCrud.save(lightStatusEntity)
+                            .thenReturn(lightEntity);
+                })
                 .map(LightBoundary::new)
                 .log();
-
     }
-
-
-
 
     @Override
     public Mono<Void> deleteLight(String id) {
@@ -80,7 +80,6 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
-
     @Override
     public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus) {
         //TODO: need to check how to use kafka
@@ -103,7 +102,6 @@ public class LightsServiceImpl implements LightsService {
                 .map(LightStatusBoundary::new)
                 .log();
     }
-
 
     @Override
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(Mono<LocationStatusBoundary> updateLocationStatus) {
