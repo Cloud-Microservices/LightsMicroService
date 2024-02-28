@@ -5,7 +5,7 @@ import lightsMicroService.data.StatusEntity;
 import java.util.Arrays;
 
 public class StatusBoundary {
-    private int brightness;
+    private Integer brightness;
     private int[] colorRGB;
     private Boolean isOn;
 
@@ -47,7 +47,7 @@ public class StatusBoundary {
         }
     }
 
-    public int getBrightness() {
+    public Integer getBrightness() {
         return brightness;
     }
 
@@ -55,7 +55,7 @@ public class StatusBoundary {
         this.brightness = brightness;
     }
 
-    public boolean getIsOn() {
+    public Boolean getIsOn() {
         return isOn;
     }
 

@@ -17,7 +17,7 @@ public interface LightsService {
 
     public Mono<LightBoundary> updateLight(LightBoundary light);
 
-    public Mono<LightStatusBoundary> updateSpecificLightStatus(Mono<LightStatusBoundary> lightStatus);
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus);
 
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(Mono<LocationStatusBoundary> updateLocationStatus);
 

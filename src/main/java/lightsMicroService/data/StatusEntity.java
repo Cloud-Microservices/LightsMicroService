@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 public class StatusEntity {
 
-    private int brightness;
+    private Integer brightness;
     private int[] colorRGB;
-    private boolean isOn;
+    private Boolean isOn;
 
     public StatusEntity(int brightness, int[] colorRGB, boolean isOn) {
         this.brightness = brightness;
@@ -17,7 +17,7 @@ public class StatusEntity {
     public StatusEntity() {
     }
 
-    public int getBrightness() {
+    public Integer getBrightness() {
         return brightness;
     }
 
@@ -33,7 +33,7 @@ public class StatusEntity {
         this.colorRGB = colorRGB;
     }
 
-    public boolean getIsOn() {
+    public Boolean getIsOn() {
         return isOn;
     }
 

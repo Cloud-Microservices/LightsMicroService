@@ -52,7 +52,7 @@ public class RestLightsController {
             path = "/status",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<LightStatusBoundary> updateSpecificLightStatus(@RequestBody Mono<LightStatusBoundary> lightStatusBoundary) {
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(@RequestBody LightStatusBoundary lightStatusBoundary) {
 
         return lightsService.updateSpecificLightStatus(lightStatusBoundary);
     }

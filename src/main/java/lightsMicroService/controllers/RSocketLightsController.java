@@ -53,7 +53,7 @@ public class RSocketLightsController {
 
     @MessageMapping("update-light-status-specific-req-resp")
     public Mono<LightStatusBoundary> updateSpecificLightStatus(
-            Mono<LightStatusBoundary> lightStatus) {
+            @Payload LightStatusBoundary lightStatus) {
         this.logger.debug("update-light-status-specific-req-resp");
         return lightsService.updateSpecificLightStatus(lightStatus);
     }

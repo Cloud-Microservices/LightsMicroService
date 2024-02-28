@@ -1,10 +1,14 @@
 package lightsMicroService.data;
 
 import lightsMicroService.boundaries.StatusBoundary;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "lightsStatus")
 
 public class LightStatusEntity {
 
-    private String id;
+    @Id private String id;
 
     private StatusEntity status;
 

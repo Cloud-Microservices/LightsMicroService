@@ -1,11 +1,15 @@
 package lightsMicroService.logic;
 
+import lightsMicroService.Exception.NotFoundException;
 import lightsMicroService.Utils.Validators;
 import lightsMicroService.boundaries.LightBoundary;
 import lightsMicroService.boundaries.LightStatusBoundary;
 import lightsMicroService.boundaries.LocationStatusBoundary;
 import lightsMicroService.boundaries.StatusBoundary;
+import lightsMicroService.dal.LightStatusCrud;
 import lightsMicroService.dal.LightsCrud;
+import lightsMicroService.data.LightStatusEntity;
+import lightsMicroService.data.StatusEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -17,10 +21,13 @@ import java.util.Date;
 public class LightsServiceImpl implements LightsService {
     private LightsCrud lightsCrud;
 
+    private LightStatusCrud lightStatusCrud;
+
 
     @Autowired
-    public void setMessageCrud(LightsCrud lightsCrud) {
+    public void setMessageCrud(LightsCrud lightsCrud, LightStatusCrud lightStatusCrud) {
         this.lightsCrud = lightsCrud;
+        this.lightStatusCrud = lightStatusCrud;
     }
 
     @Override
@@ -29,12 +36,17 @@ public class LightsServiceImpl implements LightsService {
         Date date = new Date();
         light.setLastUpdateTimestamp(date);
         light.setRegistrationTimestamp(date);
+        LightStatusEntity lightStatusEntity = new LightStatusEntity(light.getId(),new StatusEntity(100,new int[]{255,255,255},false));
+        lightStatusCrud.save(lightStatusEntity);
         return Mono.just(light.toEntity())
                 .flatMap(this.lightsCrud::save)
                 .map(LightBoundary::new)
                 .log();
 
     }
+
+
+
 
     @Override
     public Mono<Void> deleteLight(String id) {
@@ -48,6 +60,8 @@ public class LightsServiceImpl implements LightsService {
 
     }
 
+
+    //TODO: Need to ask Eyal how to implement error
     @Override
     public Mono<LightBoundary> updateLight(LightBoundary light) {
         return lightsCrud.findById(light.getId())
@@ -68,8 +82,26 @@ public class LightsServiceImpl implements LightsService {
 
 
     @Override
-    public Mono<LightStatusBoundary> updateSpecificLightStatus(Mono<LightStatusBoundary> lightStatus) {
-        return null;
+    public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus) {
+        //TODO: need to check how to use kafka
+        return lightStatusCrud.findById(lightStatus.getId())
+                .flatMap(l -> {
+                    if (lightStatus.getStatus() != null) {
+                        if (lightStatus.getStatus().getIsOn() != null) {
+                            l.getStatus().setIsOn(lightStatus.getStatus().getIsOn());
+                        }
+                        if (lightStatus.getStatus().getBrightness() != null) {
+                            l.getStatus().setBrightness(lightStatus.getStatus().getBrightness());
+                        }
+                        if (lightStatus.getStatus().getColorRGB() != null) {
+                            l.getStatus().setColorRGB(lightStatus.getStatus().getColorRGB());
+                        }
+                    }
+                    return lightStatusCrud.save(l);
+
+                })
+                .map(LightStatusBoundary::new)
+                .log();
     }
 
 
@@ -104,6 +136,7 @@ public class LightsServiceImpl implements LightsService {
     }
 
     @Override
+
     public Mono<LightStatusBoundary> getSpecificLightsStatus(String id) {
         return null;
     }

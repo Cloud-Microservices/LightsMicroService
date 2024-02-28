@@ -1,8 +1,13 @@
 package lightsMicroService.data;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 
+@Document(collection = "lights")
 public class LightEntity {
+    @Id
     private String id;
 
     private String lightType;
