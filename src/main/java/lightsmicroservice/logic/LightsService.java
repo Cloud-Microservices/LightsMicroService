@@ -1,10 +1,9 @@
-package lightsMicroService.logic;
+package lightsmicroservice.logic;
 
-import lightsMicroService.boundaries.LightBoundary;
-import lightsMicroService.boundaries.LightStatusBoundary;
-import lightsMicroService.boundaries.LocationStatusBoundary;
-import lightsMicroService.boundaries.StatusBoundary;
-import org.springframework.stereotype.Service;
+import lightsmicroservice.boundaries.LightBoundary;
+import lightsmicroservice.boundaries.LightStatusBoundary;
+import lightsmicroservice.boundaries.LocationStatusBoundary;
+import lightsmicroservice.boundaries.StatusBoundary;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

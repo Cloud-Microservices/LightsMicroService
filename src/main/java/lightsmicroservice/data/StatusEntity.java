@@ -1,4 +1,4 @@
-package lightsMicroService.data;
+package lightsmicroservice.data;
 
 import java.util.Arrays;
 

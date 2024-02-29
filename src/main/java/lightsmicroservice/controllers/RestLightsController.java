@@ -1,17 +1,15 @@
-package lightsMicroService.controllers;
+package lightsmicroservice.controllers;
 
-import lightsMicroService.boundaries.LightBoundary;
-import lightsMicroService.boundaries.LightStatusBoundary;
-import lightsMicroService.boundaries.LocationStatusBoundary;
-import lightsMicroService.boundaries.StatusBoundary;
-import lightsMicroService.logic.LightsService;
+import lightsmicroservice.boundaries.LightBoundary;
+import lightsmicroservice.boundaries.LightStatusBoundary;
+import lightsmicroservice.boundaries.LocationStatusBoundary;
+import lightsmicroservice.boundaries.StatusBoundary;
+import lightsmicroservice.logic.LightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/lights")
@@ -53,13 +51,11 @@ public class RestLightsController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<LightStatusBoundary> updateSpecificLightStatus(@RequestBody LightStatusBoundary lightStatusBoundary) {
-
         return lightsService.updateSpecificLightStatus(lightStatusBoundary);
     }
 
     @PutMapping(path = "/status/all", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<LightStatusBoundary> updateAllLightsStatus(@RequestBody Mono<StatusBoundary> statusBoundary) {
-
         return lightsService.updateAllLightsStatus(statusBoundary);
     }
 
@@ -95,4 +91,3 @@ public class RestLightsController {
         return lightsService.getSpecificLightsStatus(id);
     }
 }
-

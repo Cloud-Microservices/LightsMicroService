@@ -1,9 +1,6 @@
-package lightsMicroService.boundaries;
+package lightsmicroservice.boundaries;
 
-import lightsMicroService.data.LightEntity;
-import lightsMicroService.data.LightStatusEntity;
-
-import java.util.Arrays;
+import lightsmicroservice.data.LightStatusEntity;
 
 public class LightStatusBoundary {
 

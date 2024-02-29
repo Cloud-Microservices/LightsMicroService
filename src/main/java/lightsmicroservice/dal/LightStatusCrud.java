@@ -1,6 +1,6 @@
-package lightsMicroService.dal;
+package lightsmicroservice.dal;
 
-import lightsMicroService.data.LightStatusEntity;
+import lightsmicroservice.data.LightStatusEntity;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 public interface LightStatusCrud  extends ReactiveMongoRepository<LightStatusEntity, String> {

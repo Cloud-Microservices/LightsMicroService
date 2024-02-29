@@ -1,15 +1,13 @@
-package lightsMicroService.logic;
+package lightsmicroservice.logic;
 
-import lightsMicroService.Exception.NotFoundException;
-import lightsMicroService.Utils.Validators;
-import lightsMicroService.boundaries.LightBoundary;
-import lightsMicroService.boundaries.LightStatusBoundary;
-import lightsMicroService.boundaries.LocationStatusBoundary;
-import lightsMicroService.boundaries.StatusBoundary;
-import lightsMicroService.dal.LightStatusCrud;
-import lightsMicroService.dal.LightsCrud;
-import lightsMicroService.data.LightStatusEntity;
-import lightsMicroService.data.StatusEntity;
+import lightsmicroservice.boundaries.LightBoundary;
+import lightsmicroservice.boundaries.LightStatusBoundary;
+import lightsmicroservice.boundaries.LocationStatusBoundary;
+import lightsmicroservice.boundaries.StatusBoundary;
+import lightsmicroservice.dal.LightStatusCrud;
+import lightsmicroservice.dal.LightsCrud;
+import lightsmicroservice.data.LightStatusEntity;
+import lightsmicroservice.data.StatusEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

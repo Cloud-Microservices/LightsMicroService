@@ -1,10 +1,10 @@
-package lightsMicroService.controllers;
+package lightsmicroservice.controllers;
 
-import lightsMicroService.boundaries.LightBoundary;
-import lightsMicroService.boundaries.LightStatusBoundary;
-import lightsMicroService.boundaries.LocationStatusBoundary;
-import lightsMicroService.boundaries.StatusBoundary;
-import lightsMicroService.logic.LightsService;
+import lightsmicroservice.boundaries.LightBoundary;
+import lightsmicroservice.boundaries.LightStatusBoundary;
+import lightsmicroservice.boundaries.LocationStatusBoundary;
+import lightsmicroservice.boundaries.StatusBoundary;
+import lightsmicroservice.logic.LightsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;

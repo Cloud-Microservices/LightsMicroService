@@ -1,6 +1,6 @@
-package lightsMicroService.boundaries;
+package lightsmicroservice.boundaries;
 
-import lightsMicroService.data.LightEntity;
+import lightsmicroservice.data.LightEntity;
 
 import java.util.Date;
 

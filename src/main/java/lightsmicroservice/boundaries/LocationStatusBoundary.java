@@ -1,4 +1,4 @@
-package lightsMicroService.boundaries;
+package lightsmicroservice.boundaries;
 
 public class LocationStatusBoundary {
 
