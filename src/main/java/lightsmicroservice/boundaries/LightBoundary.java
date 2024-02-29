@@ -1,6 +1,7 @@
 package lightsmicroservice.boundaries;
 
 import lightsmicroservice.data.LightEntity;
+import lightsmicroservice.data.StatusEntity;
 
 import java.util.Date;
 
@@ -35,6 +36,7 @@ public class LightBoundary {
         rv.setLocation(this.getLocation());
         rv.setRegistrationTimestamp(this.getRegistrationTimestamp());
         rv.setLastUpdateTimestamp(this.getLastUpdateTimestamp());
+        rv.setStatus(new StatusEntity().setDefaultStatus());
 
         return rv;
     }

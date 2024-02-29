@@ -1,6 +1,6 @@
 package lightsmicroservice.boundaries;
 
-import lightsmicroservice.data.LightStatusEntity;
+import lightsmicroservice.data.LightEntity;
 
 public class LightStatusBoundary {
 
@@ -8,22 +8,12 @@ public class LightStatusBoundary {
 
     private StatusBoundary status;
 
-    public LightStatusBoundary(LightStatusEntity entity) {
+    public LightStatusBoundary(LightEntity entity) {
         this.setId(entity.getId());
         this.setStatus(new StatusBoundary(entity.getStatus()));
-
     }
 
-    public LightStatusEntity toEntity() {
-        LightStatusEntity rv = new LightStatusEntity();
-        rv.setId(this.getId());
-        rv.setStatus(this.getStatus().toEntity());
-        return rv;
-    }
-
-    public LightStatusBoundary() {
-
-    }
+    public LightStatusBoundary() {}
 
     public LightStatusBoundary(String id, StatusBoundary status) {
         this.id = id;

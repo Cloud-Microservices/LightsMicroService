@@ -7,6 +7,7 @@ import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.logic.LightsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,11 @@ import reactor.core.publisher.Mono;
 public class RSocketLightsController {
     private LightsService lightsService;
     private Log logger = LogFactory.getLog(RSocketLightsController.class);
+
+    @Autowired
+    public RSocketLightsController(LightsService lightsService) {
+        this.lightsService = lightsService;
+    }
 
     @MessageMapping("create-light-req-resp")
     public Mono<LightBoundary> createLight(
@@ -46,7 +52,7 @@ public class RSocketLightsController {
     }
     @MessageMapping("update-light-status-all-req-stream")
     public Flux<LightStatusBoundary> updateAllLightsStatus(
-            Mono<StatusBoundary> statusBoundary) {
+            @Payload StatusBoundary statusBoundary) {
         this.logger.debug("update-light-status-all-req-stream");
         return lightsService.updateAllLightsStatus(statusBoundary);
     }
@@ -60,7 +66,7 @@ public class RSocketLightsController {
 
     @MessageMapping("update-light-status-by-location-req-stream")
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(
-            Mono<LocationStatusBoundary> updateLocationStatus) {
+            @Payload LocationStatusBoundary updateLocationStatus) {
         this.logger.debug("update-light-status-by-location-req-stream");
         return lightsService.updateLightsStatusByLocation(updateLocationStatus);
     }

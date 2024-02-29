@@ -8,27 +8,28 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface LightsService {
-    public Mono<LightBoundary> createLight(LightBoundary light);
+   Mono<LightBoundary> createLight(LightBoundary light);
 
-    public Mono<Void> deleteLight(String id);
+   Mono<Void> deleteLight(String id);
 
-    public Mono<Void> deleteAll();
+   Mono<Void> deleteAll();
 
-    public Mono<LightBoundary> updateLight(LightBoundary light);
+   Mono<LightBoundary> updateLight(LightBoundary light);
 
-    public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus);
+   Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus);
 
-    public Flux<LightStatusBoundary> updateLightsStatusByLocation(Mono<LocationStatusBoundary> updateLocationStatus);
+   Flux<LightStatusBoundary> updateLightsStatusByLocation(LocationStatusBoundary updateLocationStatus);
 
-    public Flux<LightStatusBoundary> updateAllLightsStatus(Mono<StatusBoundary> statusBoundary);
+   Flux<LightStatusBoundary> updateAllLightsStatus(StatusBoundary statusBoundary);
 
-    public Mono<LightBoundary> getLightById(String id);
+   Mono<LightBoundary> getLightById(String id);
 
-    public Flux<LightBoundary> getAllLights();
+   Flux<LightBoundary> getAllLights();
 
-    public Flux<LightStatusBoundary> getAllLightsStatus();
+   Flux<LightStatusBoundary> getAllLightsStatus();
 
-    public Flux<LightStatusBoundary> getAllLightsStatusByLocation(String location);
+   Flux<LightStatusBoundary> getAllLightsStatusByLocation(String location);
 
-    public Mono<LightStatusBoundary> getSpecificLightsStatus(String id);
+   Mono<LightStatusBoundary> getSpecificLightsStatus(String id);
+
 }

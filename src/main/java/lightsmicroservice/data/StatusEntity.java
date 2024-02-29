@@ -3,12 +3,11 @@ package lightsmicroservice.data;
 import java.util.Arrays;
 
 public class StatusEntity {
-
     private Integer brightness;
     private int[] colorRGB;
     private Boolean isOn;
 
-    public StatusEntity(int brightness, int[] colorRGB, boolean isOn) {
+    public StatusEntity(Integer brightness, int[] colorRGB, Boolean isOn) {
         this.brightness = brightness;
         this.colorRGB = colorRGB;
         this.isOn = isOn;
@@ -17,28 +16,38 @@ public class StatusEntity {
     public StatusEntity() {
     }
 
+    public StatusEntity setDefaultStatus() {
+        this.brightness = 100;
+        this.colorRGB = new int[]{255,255,255};
+        this.isOn = false;
+        return this;
+    }
+
     public Integer getBrightness() {
         return brightness;
     }
 
-    public void setBrightness(int brightness) {
+    public StatusEntity setBrightness(Integer brightness) {
         this.brightness = brightness;
+        return this;
     }
 
     public int[] getColorRGB() {
         return colorRGB;
     }
 
-    public void setColorRGB(int[] colorRGB) {
+    public StatusEntity setColorRGB(int[] colorRGB) {
         this.colorRGB = colorRGB;
+        return this;
     }
 
     public Boolean getIsOn() {
         return isOn;
     }
 
-    public void setIsOn(boolean on) {
+    public StatusEntity setIsOn(Boolean on) {
         isOn = on;
+        return this;
     }
 
     @Override

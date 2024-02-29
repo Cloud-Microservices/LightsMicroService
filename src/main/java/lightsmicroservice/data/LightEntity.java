@@ -20,14 +20,19 @@ public class LightEntity {
 
     private String location;
 
+    private StatusEntity status;
+
     public LightEntity() {
     }
 
-    public LightEntity(String id, String lightType, String alias, String location) {
+    public LightEntity(String id, String lightType, String alias, Date registrationTimestamp, Date lastUpdateTimestamp, String location, StatusEntity status) {
         this.id = id;
         this.lightType = lightType;
         this.alias = alias;
+        this.registrationTimestamp = registrationTimestamp;
+        this.lastUpdateTimestamp = lastUpdateTimestamp;
         this.location = location;
+        this.status = status;
     }
 
     public String getId() {
@@ -78,6 +83,14 @@ public class LightEntity {
         this.location = location;
     }
 
+    public StatusEntity getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusEntity status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "LightEntity{" +
@@ -87,6 +100,8 @@ public class LightEntity {
                 ", registrationTimestamp=" + registrationTimestamp +
                 ", lastUpdateTimestamp=" + lastUpdateTimestamp +
                 ", location='" + location + '\'' +
+                ", status=" + status +
                 '}';
     }
+
 }

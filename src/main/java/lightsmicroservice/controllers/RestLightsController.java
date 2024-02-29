@@ -54,13 +54,19 @@ public class RestLightsController {
         return lightsService.updateSpecificLightStatus(lightStatusBoundary);
     }
 
-    @PutMapping(path = "/status/all", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<LightStatusBoundary> updateAllLightsStatus(@RequestBody Mono<StatusBoundary> statusBoundary) {
+    @PutMapping(
+            path = "/status/all",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<LightStatusBoundary> updateAllLightsStatus(@RequestBody StatusBoundary statusBoundary) {
         return lightsService.updateAllLightsStatus(statusBoundary);
     }
 
-    @PutMapping(path = "/status/location", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<LightStatusBoundary> updateLightsStatusByLocation(@RequestBody Mono<LocationStatusBoundary> locationStatus) {
+    @PutMapping(
+            path = "/status/location",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<LightStatusBoundary> updateLightsStatusByLocation(@RequestBody LocationStatusBoundary locationStatus) {
 
         return lightsService.updateLightsStatusByLocation(locationStatus);
     }
