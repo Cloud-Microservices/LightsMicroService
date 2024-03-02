@@ -1,12 +1,16 @@
 package lightsmicroservice.logic;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lightsmicroservice.boundaries.LightBoundary;
 import lightsmicroservice.boundaries.LightStatusBoundary;
 import lightsmicroservice.boundaries.LocationStatusBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import lightsmicroservice.utils.Validators;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,9 +21,25 @@ import java.util.Date;
 public class LightsServiceImpl implements LightsService {
     private LightsCrud lightsCrud;
 
-    @Autowired
-    public void setMessageCrud(LightsCrud lightsCrud) {
+    private StreamBridge kafka;
+
+    private ObjectMapper jackson;
+
+    private String targetTopic;
+
+    public LightsServiceImpl(LightsCrud lightsCrud, StreamBridge kafka) {
         this.lightsCrud = lightsCrud;
+        this.kafka = kafka;
+    }
+
+    @PostConstruct
+    public void init() {
+        this.jackson = new ObjectMapper();
+    }
+
+    @Value("${target.topic.name:anyTopic}")
+    public void setTargetTopic(String targetTopic) {
+        this.targetTopic = targetTopic;
     }
 
     @Override
@@ -43,15 +63,10 @@ public class LightsServiceImpl implements LightsService {
     @Override
     public Mono<Void> deleteAll() {
         return this.lightsCrud.deleteAll();
-
     }
 
     @Override
     public Mono<LightBoundary> updateLight(LightBoundary light) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
         return lightsCrud.findById(light.getId())
                 .flatMap(lightEntity -> {
                     lightEntity.setLastUpdateTimestamp(new Date());
@@ -69,10 +84,6 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
         return lightsCrud.findById(lightStatus.getId())
                 .flatMap(lightEntity -> {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, lightStatus.getStatus());
@@ -84,10 +95,6 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(LocationStatusBoundary locationStatusBoundary) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
         return lightsCrud.findAllByLocation(locationStatusBoundary.getLocation())
                 .flatMap(lightEntity -> {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, locationStatusBoundary.getStatus());
@@ -99,10 +106,7 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Flux<LightStatusBoundary> updateAllLightsStatus(StatusBoundary statusBoundary) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
+
         return lightsCrud.findAll()
                 .flatMap(lightEntity -> {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, statusBoundary);
@@ -114,10 +118,6 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Mono<LightBoundary> getLightById(String id) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
         return lightsCrud.findById(id)
                 .map(LightBoundary::new)
                 .log();
@@ -145,30 +145,21 @@ public class LightsServiceImpl implements LightsService {
     }
 
     @Override
-
     public Mono<LightStatusBoundary> getSpecificLightsStatus(String id) {
-        /*
-         TODO:  need to check id is found
-                exception if id not found
-         */
         return lightsCrud.findById(id)
                 .map(LightStatusBoundary::new)
                 .log();
     }
 
     private LightEntity updateLightStatus(LightEntity lightEntity, StatusBoundary newStatus) {
-        /*
-        TODO:   check if there is a change in the status
-                and decide what to do and who to notice
-         */
         if (newStatus != null) {
             if (newStatus.getIsOn() != null) {
                 lightEntity.getStatus().setIsOn(newStatus.getIsOn());
             }
-            if (newStatus.getBrightness() != null) {
+            if (Validators.isBrightnessValid(newStatus.getBrightness())) {
                 lightEntity.getStatus().setBrightness(newStatus.getBrightness());
             }
-            if (newStatus.getColorRGB() != null) {
+            if (Validators.isColorRGBValid(newStatus.getColorRGB())) {
                 lightEntity.getStatus().setColorRGB(newStatus.getColorRGB());
             }
         }

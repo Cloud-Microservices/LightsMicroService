@@ -37,14 +37,7 @@ public class StatusBoundary {
     }
 
     public void setColorRGB(int[] colorRGB) {
-        // Check if the array is valid
-        if (colorRGB != null && colorRGB.length == 3 &&
-                Arrays.stream(colorRGB).allMatch(value -> value >= 0 && value <= 255)) {
-            this.colorRGB = colorRGB;
-        } else {
-            // Default to white color if validation fails
-            this.colorRGB = new int[]{255, 255, 255};
-        }
+        this.colorRGB = colorRGB;
     }
 
     public Integer getBrightness() {
