@@ -9,8 +9,10 @@ import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
 import lightsmicroservice.utils.Validators;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,7 +22,10 @@ import java.util.Date;
 @Service
 public class LightsServiceImpl implements LightsService {
     private LightsCrud lightsCrud;
-
+    private RSocketRequester requester;
+    private RSocketRequester.Builder requesterBuilder;
+    private String rsocketHost; //ip address of the one we want to send the message to
+    private int rsocketPort; //port number of the one we want to send the message to
     private StreamBridge kafka;
 
     private ObjectMapper jackson;
@@ -32,9 +37,25 @@ public class LightsServiceImpl implements LightsService {
         this.kafka = kafka;
     }
 
+    @Autowired
+    public void setRequesterBuilder(RSocketRequester.Builder requesterBuilder) {
+        this.requesterBuilder = requesterBuilder;
+    }
+
+    @Value("${demoapp.client.rsocket.host:127.0.0.1}")
+    public void setRsocketHost(String rsocketHost) {
+        this.rsocketHost = rsocketHost;
+    }
+
+    @Value("${demoapp.client.rsocket.port:7001}")
+    public void setRsocketPort(int rsocketPort) {
+        this.rsocketPort = rsocketPort;
+    }
+
     @PostConstruct
     public void init() {
         this.jackson = new ObjectMapper();
+        this.requester = this.requesterBuilder.tcp(rsocketHost, rsocketPort);
     }
 
     @Value("${target.topic.name:anyTopic}")
@@ -52,6 +73,13 @@ public class LightsServiceImpl implements LightsService {
         return Mono.just(light.toEntity())
                 .flatMap(this.lightsCrud::save)
                 .map(LightBoundary::new)
+                //TODO: fix the following line, create methods that convert out entity to a device boundary to send to Rom's group
+//                .flatMap(lightBoundary -> {
+//                    this.requester
+//                            .route("registerDevice-req-resp")
+//                            .data(toDeviceBoundary(lightBoundary))
+//                            .retrieveMono(toDeviceBoundary(lightBoundary).class)
+//                })
                 .log();
     }
 
