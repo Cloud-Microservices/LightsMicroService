@@ -8,5 +8,5 @@ public interface LightsCrud extends ReactiveMongoRepository<LightEntity, String>
 
     Flux<LightEntity> findAllByLocation(String location);
 
-
+    Flux<LightEntity> findAllByStatus_isOn(Boolean isOn);
 }

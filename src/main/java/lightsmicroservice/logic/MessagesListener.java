@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Consumer;
 
-@Configuration
+//@Configuration
 public class MessagesListener {
 	private ObjectMapper jackson;
 
@@ -21,12 +21,12 @@ public class MessagesListener {
 		this.lightsService = lightsService;
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	public void init() {
 		this.jackson = new ObjectMapper();
 	}
 	
-	@Bean
+//	@Bean
 	public Consumer<String> MessagesSink(){
 		return stringInput->{
 			this.logger.trace("*** received: " + stringInput);

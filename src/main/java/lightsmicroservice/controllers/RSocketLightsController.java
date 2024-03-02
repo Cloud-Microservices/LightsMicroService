@@ -112,4 +112,11 @@ public class RSocketLightsController {
         this.logger.debug("get-specific-light-status-req-resp");
         return lightsService.getSpecificLightsStatus(id);
     }
+
+    // java -jar rsc-0.9.1.jar --stream --route=get-lights-by-status-is-on-req-stream --data="{\"isOn\":true}" --debug tcp://localhost:7007
+    @MessageMapping("get-lights-by-status-is-on-req-stream")
+    public Flux<LightBoundary> getLightsByStatusIsOn(Boolean isOn) {
+        this.logger.debug("get-lights-by-status-is-on-req-stream");
+        return lightsService.getLightsByStatusIsOn(isOn);
+    }
 }

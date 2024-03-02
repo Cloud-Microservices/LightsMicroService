@@ -32,4 +32,7 @@ public interface LightsService {
 
    Mono<LightStatusBoundary> getSpecificLightsStatus(String id);
 
+//   Flux<LightBoundary> getLightsByStatusIsOn(StatusBoundary status);
+Flux<LightBoundary> getLightsByStatusIsOn(Boolean isOn);
+
 }

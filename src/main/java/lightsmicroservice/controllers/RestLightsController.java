@@ -96,4 +96,9 @@ public class RestLightsController {
     public Mono<LightStatusBoundary> getSpecificLightStatus(@PathVariable String id) {
         return lightsService.getSpecificLightsStatus(id);
     }
+
+    @GetMapping("/status/isOn/{isOn}")
+    public Flux<LightBoundary> getLightsByStatusIsOn(@PathVariable Boolean isOn) {
+        return lightsService.getLightsByStatusIsOn(isOn);
+    }
 }

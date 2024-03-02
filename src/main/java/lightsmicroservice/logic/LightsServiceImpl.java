@@ -151,6 +151,13 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
+    @Override
+    public Flux<LightBoundary> getLightsByStatusIsOn(Boolean isOn) {
+        return lightsCrud.findAllByStatus_isOn(isOn)
+                .map(LightBoundary::new)
+                .log();
+    }
+
     private LightEntity updateLightStatus(LightEntity lightEntity, StatusBoundary newStatus) {
         if (newStatus != null) {
             if (newStatus.getIsOn() != null) {
