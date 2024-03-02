@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 @Configuration
@@ -29,7 +28,9 @@ public class MessagesListener {
 	
 	@Bean
 	public Consumer<String> MessagesSink(){
-		return null;
+		return stringInput->{
+			this.logger.trace("*** received: " + stringInput);
+		};
 /*
 		return stringInput->{
 			try {

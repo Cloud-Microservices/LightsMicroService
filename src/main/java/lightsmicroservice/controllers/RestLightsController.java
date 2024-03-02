@@ -34,7 +34,7 @@ public class RestLightsController {
         return lightsService.deleteLight(id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/all")
     public Mono<Void> deleteAllLights() {
         return lightsService.deleteAll();
     }
@@ -77,7 +77,7 @@ public class RestLightsController {
         return lightsService.getLightById(id);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public Flux<LightBoundary> getAllLights() {
         return lightsService.getAllLights();
     }
