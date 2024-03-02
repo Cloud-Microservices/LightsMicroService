@@ -70,11 +70,11 @@ public class LightsServiceImpl implements LightsService {
         return lightsCrud.findById(light.getId())
                 .flatMap(lightEntity -> {
                     lightEntity.setLastUpdateTimestamp(new Date());
-                    if (!light.getAlias().isEmpty())
+                    if (light.getAlias()!= null && !light.getAlias().isEmpty())
                         lightEntity.setAlias(light.getAlias());
-                    if (!light.getLightType().isEmpty())
+                    if (light.getLightType()!= null && !light.getLightType().isEmpty())
                         lightEntity.setLightType(light.getLightType());
-                    if (!light.getLocation().isEmpty())
+                    if (light.getLocation()!= null && !light.getLocation().isEmpty())
                         lightEntity.setLocation(light.getLocation());
                     return lightsCrud.save(lightEntity);
                 })
