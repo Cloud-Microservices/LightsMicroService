@@ -24,8 +24,8 @@ public class LightsServiceImpl implements LightsService {
     private LightsCrud lightsCrud;
     private RSocketRequester requester;
     private RSocketRequester.Builder requesterBuilder;
-    private String rsocketHost; //ip address of the one we want to send the message to
-    private int rsocketPort; //port number of the one we want to send the message to
+    private String rsocketHost; //ip address of the one we want to send the message to --> local host
+    private int rsocketPort; //port number of the one we want to send the message to --> Rom 7071
     private StreamBridge kafka;
 
     private ObjectMapper jackson;
