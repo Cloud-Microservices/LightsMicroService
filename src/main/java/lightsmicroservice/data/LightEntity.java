@@ -9,23 +9,18 @@ import java.util.Date;
 public class LightEntity {
     @Id
     private String id;
-
     private String lightType;
-
     private String alias;
-
     private Date registrationTimestamp;
-
     private Date lastUpdateTimestamp;
-
     private String location;
-
     private StatusEntity status;
+    private Integer manufacturerPowerInWatts;
 
     public LightEntity() {
     }
 
-    public LightEntity(String id, String lightType, String alias, Date registrationTimestamp, Date lastUpdateTimestamp, String location, StatusEntity status) {
+    public LightEntity(String id, String lightType, String alias, Date registrationTimestamp, Date lastUpdateTimestamp, String location, StatusEntity status, Integer manufacturerPowerInWatts) {
         this.id = id;
         this.lightType = lightType;
         this.alias = alias;
@@ -33,6 +28,7 @@ public class LightEntity {
         this.lastUpdateTimestamp = lastUpdateTimestamp;
         this.location = location;
         this.status = status;
+        this.manufacturerPowerInWatts = manufacturerPowerInWatts;
     }
 
     public String getId() {
@@ -89,6 +85,14 @@ public class LightEntity {
 
     public void setStatus(StatusEntity status) {
         this.status = status;
+    }
+
+    public Integer getManufacturerPowerInWatts() {
+        return manufacturerPowerInWatts;
+    }
+
+    public void setManufacturerPowerInWatts(Integer manufacturerPowerInWatts) {
+        this.manufacturerPowerInWatts = manufacturerPowerInWatts;
     }
 
     @Override

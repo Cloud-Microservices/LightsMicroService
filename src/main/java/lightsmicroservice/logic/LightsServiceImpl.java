@@ -6,8 +6,10 @@ import lightsmicroservice.boundaries.LightBoundary;
 import lightsmicroservice.boundaries.LightStatusBoundary;
 import lightsmicroservice.boundaries.LocationStatusBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
+import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
+import lightsmicroservice.data.StatusEntity;
 import lightsmicroservice.utils.Validators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +49,7 @@ public class LightsServiceImpl implements LightsService {
         this.rsocketHost = rsocketHost;
     }
 
-    @Value("${demoapp.client.rsocket.port:7001}")
+    @Value("${demoapp.client.rsocket.port:6080}")
     public void setRsocketPort(int rsocketPort) {
         this.rsocketPort = rsocketPort;
     }
@@ -63,6 +65,22 @@ public class LightsServiceImpl implements LightsService {
         this.targetTopic = targetTopic;
     }
 
+    public Mono<DeviceBoundary> toDeviceBoundary(LightBoundary lightBoundary) {
+        DeviceBoundary deviceBoundary = new DeviceBoundary();
+        deviceBoundary.setId(lightBoundary.getId());
+        deviceBoundary.setType("Light");
+        deviceBoundary.setSubType(lightBoundary.getLightType());
+        deviceBoundary.setRegistrationTimestamp(lightBoundary.getRegistrationTimestamp());
+        deviceBoundary.setLastUpdateTimestamp(lightBoundary.getLastUpdateTimestamp());
+        deviceBoundary.setLocation(lightBoundary.getLocation());
+        deviceBoundary.setManufacturerPowerInWatts(lightBoundary.getManufacturerPowerInWatts());
+
+        //TODO: check if we need to add the status
+        StatusBoundary statusBoundary = new StatusBoundary(new StatusEntity());
+        deviceBoundary.setStatus(statusBoundary);
+        return Mono.just(deviceBoundary);
+    }
+
     @Override
     public Mono<LightBoundary> createLight(LightBoundary light) {
         light.setId(null);
@@ -73,21 +91,26 @@ public class LightsServiceImpl implements LightsService {
         return Mono.just(light.toEntity())
                 .flatMap(this.lightsCrud::save)
                 .map(LightBoundary::new)
-                //TODO: fix the following line, create methods that convert out entity to a device boundary to send to Rom's group
-//                .flatMap(lightBoundary -> {
-//                    this.requester
-//                            .route("registerDevice-req-resp")
-//                            .data(toDeviceBoundary(lightBoundary))
-//                            .retrieveMono(toDeviceBoundary(lightBoundary).class)
-//                })
+                .flatMap(lightBoundary ->
+                    this.requester
+                            .route("registerDevice-req-resp")
+                            .data(toDeviceBoundary(lightBoundary))
+                            .retrieveMono(DeviceBoundary.class)
+                            .thenReturn(lightBoundary)
+                )
                 .log();
     }
 
     @Override
     public Mono<Void> deleteLight(String id) {
-        return this.lightsCrud.deleteById(id);
+        return this.requester
+                .route("deleteDeviceById-{id}-fnf", id)
+                .retrieveMono(DeviceBoundary.class)
+                .then()
+                .then(this.lightsCrud.deleteById(id));
     }
 
+    //TODO: check if we need to update Rom because it will delete all the devices he has.
     @Override
     public Mono<Void> deleteAll() {
         return this.lightsCrud.deleteAll();
@@ -107,6 +130,13 @@ public class LightsServiceImpl implements LightsService {
                     return lightsCrud.save(lightEntity);
                 })
                 .map(LightBoundary::new)
+                .flatMap(lightBoundary ->
+                        this.requester
+                                .route("updateDevice-{id}-fnf", lightBoundary.getId())
+                                .data(toDeviceBoundary(lightBoundary))
+                                .retrieveMono(DeviceBoundary.class)
+                                .thenReturn(lightBoundary)
+                )
                 .log();
     }
 
@@ -118,6 +148,13 @@ public class LightsServiceImpl implements LightsService {
                     return lightsCrud.save(newLightEntity);
                 })
                 .map(LightStatusBoundary::new)
+                .flatMap(LightStatusBoundary ->
+                        this.requester
+                                .route("updateDeviceStatus-{id}-fnf", LightStatusBoundary.getId())
+                                .data(lightStatus.getStatus())
+                                .retrieveMono(DeviceBoundary.class)
+                                .thenReturn(LightStatusBoundary)
+                )
                 .log();
     }
 

@@ -8,16 +8,12 @@ import java.util.Date;
 public class LightBoundary {
 
     private String id;
-
     private String lightType;
-
     private String alias;
-
     private Date registrationTimestamp;
-
     private Date lastUpdateTimestamp;
-
     private String location;
+    private Integer manufacturerPowerInWatts;
 
     public LightBoundary(LightEntity entity) {
         this.setId(entity.getId());
@@ -26,10 +22,11 @@ public class LightBoundary {
         this.setAlias(entity.getAlias());
         this.setLocation(entity.getLocation());
         this.setLightType(entity.getLightType());
+        this.setManufacturerPowerInWatts(entity.getManufacturerPowerInWatts());
     }
+
     public LightEntity toEntity() {
         LightEntity rv = new LightEntity();
-
         rv.setId(this.getId());
         rv.setAlias(this.getAlias());
         rv.setLightType(this.getLightType());
@@ -37,7 +34,7 @@ public class LightBoundary {
         rv.setRegistrationTimestamp(this.getRegistrationTimestamp());
         rv.setLastUpdateTimestamp(this.getLastUpdateTimestamp());
         rv.setStatus(new StatusEntity().setDefaultStatus());
-
+        rv.setManufacturerPowerInWatts(this.getManufacturerPowerInWatts());
         return rv;
     }
 
@@ -92,6 +89,13 @@ public class LightBoundary {
         this.location = location;
     }
 
+    public Integer getManufacturerPowerInWatts() {
+        return manufacturerPowerInWatts;
+    }
+
+    public void setManufacturerPowerInWatts(Integer manufacturerPowerInWatts) {
+        this.manufacturerPowerInWatts = manufacturerPowerInWatts;
+    }
 
     @Override
     public String toString() {
@@ -102,6 +106,7 @@ public class LightBoundary {
                 ", registrationTimestamp=" + registrationTimestamp +
                 ", lastUpdateTimestamp=" + lastUpdateTimestamp +
                 ", location='" + location + '\'' +
+                ", manufacturerPowerInWatts=" + manufacturerPowerInWatts +
                 '}';
     }
 }
