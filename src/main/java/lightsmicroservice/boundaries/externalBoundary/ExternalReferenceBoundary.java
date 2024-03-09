@@ -16,16 +16,18 @@ public class ExternalReferenceBoundary {
         return service;
     }
 
-    public void setService(String service) {
+    public ExternalReferenceBoundary setService(String service) {
         this.service = service;
+        return this;
     }
 
     public String getExternalServiceId() {
         return externalServiceId;
     }
 
-    public void setExternalServiceId(String externalServiceId) {
+    public ExternalReferenceBoundary setExternalServiceId(String externalServiceId) {
         this.externalServiceId = externalServiceId;
+        return this;
     }
 
     @Override

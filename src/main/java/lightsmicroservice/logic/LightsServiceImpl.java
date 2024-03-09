@@ -7,9 +7,12 @@ import lightsmicroservice.boundaries.LightStatusBoundary;
 import lightsmicroservice.boundaries.LocationStatusBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
+import lightsmicroservice.boundaries.externalBoundary.ExternalReferenceBoundary;
+import lightsmicroservice.boundaries.externalBoundary.MessageBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
 import lightsmicroservice.data.StatusEntity;
+import lightsmicroservice.utils.Converters;
 import lightsmicroservice.utils.Validators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,23 +23,28 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LightsServiceImpl implements LightsService {
     private LightsCrud lightsCrud;
     private RSocketRequester requester;
     private RSocketRequester.Builder requesterBuilder;
-    private String rsocketHost; //ip address of the one we want to send the message to --> local host
-    private int rsocketPort; //port number of the one we want to send the message to --> Rom 6080
+    private String rsocketHost;
+    private int rsocketPort;
     private StreamBridge kafka;
 
     private ObjectMapper jackson;
 
     private String targetTopic;
 
-    public LightsServiceImpl(LightsCrud lightsCrud, StreamBridge kafka) {
+    private Converters converter;
+
+    public LightsServiceImpl(LightsCrud lightsCrud, StreamBridge kafka, Converters converter) {
         this.lightsCrud = lightsCrud;
         this.kafka = kafka;
+        this.converter = converter;
     }
 
     @Autowired
@@ -44,12 +52,12 @@ public class LightsServiceImpl implements LightsService {
         this.requesterBuilder = requesterBuilder;
     }
 
-    @Value("${demoapp.client.rsocket.host:127.0.0.1}")
+    @Value("${services.devicemanager.rsocket.host:127.0.0.1}")
     public void setRsocketHost(String rsocketHost) {
         this.rsocketHost = rsocketHost;
     }
 
-    @Value("${demoapp.client.rsocket.port:6080}")
+    @Value("${services.devicemanager.rsocket.port:7071}")
     public void setRsocketPort(int rsocketPort) {
         this.rsocketPort = rsocketPort;
     }
@@ -65,24 +73,6 @@ public class LightsServiceImpl implements LightsService {
         this.targetTopic = targetTopic;
     }
 
-    public Mono<DeviceBoundary> toDeviceBoundary(LightBoundary lightBoundary) {
-        DeviceBoundary deviceBoundary = new DeviceBoundary();
-        deviceBoundary.setId(lightBoundary.getId());
-        deviceBoundary.setType("Light");
-        deviceBoundary.setSubType(lightBoundary.getLightType());
-        deviceBoundary.setRegistrationTimestamp(lightBoundary.getRegistrationTimestamp());
-        deviceBoundary.setLastUpdateTimestamp(lightBoundary.getLastUpdateTimestamp());
-        deviceBoundary.setLocation(lightBoundary.getLocation());
-        deviceBoundary.setManufacturerPowerInWatts(lightBoundary.getManufacturerPowerInWatts());
-
-        //TODO: check if we need to add the status: when it is for createBoundary it is better with setDefaultStatus,
-        // but for other options we need to add the status from the original.
-        // we need to go to the DB to take the status of the light entity and to set it here.
-        StatusBoundary statusBoundary = new StatusBoundary(new StatusEntity().setDefaultStatus());
-        deviceBoundary.setStatus(statusBoundary);
-        return Mono.just(deviceBoundary);
-    }
-
     @Override
     public Mono<LightBoundary> createLight(LightBoundary light) {
         light.setId(null);
@@ -94,12 +84,34 @@ public class LightsServiceImpl implements LightsService {
                 .flatMap(this.lightsCrud::save)
                 .map(LightBoundary::new)
                 .flatMap(lightBoundary ->
-                    this.requester
+                {
+                    DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightBoundary);
+
+
+                    ExternalReferenceBoundary externalReferenceBoundary = new ExternalReferenceBoundary()
+                            .setService("aaa")
+                            .setExternalServiceId("bbb");
+                    List<ExternalReferenceBoundary> externalReferenceBoundaries = List.of(externalReferenceBoundary);
+
+
+                    MessageBoundary messageBoundary = new MessageBoundary()
+                            .setMessageId("1")
+                            .setPublishedTimestamp(new Date())
+                            .setMessageType("Light")
+                            .setSummary("Light created")
+                            .setExternalReferences(externalReferenceBoundaries)
+                            .setMessageDetails(jackson.convertValue(deviceBoundary, jackson.getTypeFactory().constructMapType(
+                                    Map.class, String.class, Object.class)));
+
+                    System.err.println(messageBoundary);
+
+                    return this.requester
                             .route("registerDevice-req-resp")
-                            .data(toDeviceBoundary(lightBoundary))
-                            .retrieveMono(DeviceBoundary.class)
-                            .thenReturn(lightBoundary)
-                )
+                            .data(messageBoundary)
+                            .retrieveMono(MessageBoundary.class)
+                            .thenReturn(lightBoundary);
+
+                })
                 .log();
     }
 
@@ -120,25 +132,26 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Mono<LightBoundary> updateLight(LightBoundary light) {
+        // TODO: add the status to converter to deviceBoundary (get from entity)
         return lightsCrud.findById(light.getId())
                 .flatMap(lightEntity -> {
                     lightEntity.setLastUpdateTimestamp(new Date());
-                    if (light.getAlias()!= null && !light.getAlias().isEmpty())
+                    if (light.getAlias() != null && !light.getAlias().isEmpty())
                         lightEntity.setAlias(light.getAlias());
-                    if (light.getLightType()!= null && !light.getLightType().isEmpty())
+                    if (light.getLightType() != null && !light.getLightType().isEmpty())
                         lightEntity.setLightType(light.getLightType());
-                    if (light.getLocation()!= null && !light.getLocation().isEmpty())
+                    if (light.getLocation() != null && !light.getLocation().isEmpty())
                         lightEntity.setLocation(light.getLocation());
                     return lightsCrud.save(lightEntity);
                 })
-                .map(LightBoundary::new)
-                .flatMap(lightBoundary ->
-                        this.requester
-                                .route("updateDevice-{id}-fnf", lightBoundary.getId())
-                                .data(toDeviceBoundary(lightBoundary))
-                                .retrieveMono(DeviceBoundary.class)
-                                .thenReturn(lightBoundary)
-                )
+                .flatMap(lightEntity -> {
+                    LightBoundary lightBoundary = new LightBoundary(lightEntity);
+                    return this.requester
+                            .route("updateDevice-{id}-fnf", lightBoundary.getId())
+                            .data(this.converter.toDeviceBoundary(lightBoundary, new StatusBoundary(lightEntity.getStatus())))
+                            .retrieveMono(DeviceBoundary.class)
+                            .thenReturn(lightBoundary);
+                })
                 .log();
     }
 

@@ -14,9 +14,11 @@ public class DeviceBoundary {
     private Integer manufacturerPowerInWatts;
     private StatusBoundary status;
 
+    private Object addionalAttributes;
+
     public DeviceBoundary() {}
 
-    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Integer manufacturerPowerInWatts, StatusBoundary status) {
+    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Integer manufacturerPowerInWatts, StatusBoundary status, Object addionalAttributes) {
         this.id = id;
         this.type = type;
         this.subType = subType;
@@ -25,6 +27,7 @@ public class DeviceBoundary {
         this.location = location;
         this.manufacturerPowerInWatts = manufacturerPowerInWatts;
         this.status = status;
+        this.addionalAttributes = addionalAttributes;
     }
 
     public String getId() {
@@ -91,6 +94,14 @@ public class DeviceBoundary {
         this.status = status;
     }
 
+    public Object getAddionalAttributes() {
+        return addionalAttributes;
+    }
+
+    public void setAddionalAttributes(Object addionalAttributes) {
+        this.addionalAttributes = addionalAttributes;
+    }
+
     @Override
     public String toString() {
         return "DeviceBoundary{" +
@@ -102,6 +113,7 @@ public class DeviceBoundary {
                 ", location='" + location + '\'' +
                 ", manufacturerPowerInWatts=" + manufacturerPowerInWatts +
                 ", status=" + status +
+                ", addionalAttributes=" + addionalAttributes +
                 '}';
     }
 }
