@@ -3,7 +3,6 @@ package lightsmicroservice.utils;
 import lightsmicroservice.boundaries.LightBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
-import lightsmicroservice.boundaries.externalBoundary.MessageBoundary;
 import lightsmicroservice.data.LightEntity;
 import lightsmicroservice.data.StatusEntity;
 import org.springframework.stereotype.Component;

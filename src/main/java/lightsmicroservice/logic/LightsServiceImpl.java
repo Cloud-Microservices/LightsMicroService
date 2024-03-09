@@ -7,24 +7,19 @@ import lightsmicroservice.boundaries.LightStatusBoundary;
 import lightsmicroservice.boundaries.LocationStatusBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
-import lightsmicroservice.boundaries.externalBoundary.ExternalReferenceBoundary;
 import lightsmicroservice.boundaries.externalBoundary.MessageBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
-import lightsmicroservice.data.StatusEntity;
 import lightsmicroservice.utils.Converters;
 import lightsmicroservice.utils.Validators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class LightsServiceImpl implements LightsService {
@@ -33,18 +28,14 @@ public class LightsServiceImpl implements LightsService {
     private RSocketRequester.Builder requesterBuilder;
     private String rsocketHost;
     private int rsocketPort;
-    private StreamBridge kafka;
-
     private ObjectMapper jackson;
-
-    private String targetTopic;
-
+    private MessagesHandler messagesHandler;
     private Converters converter;
 
-    public LightsServiceImpl(LightsCrud lightsCrud, StreamBridge kafka, Converters converter) {
+    public LightsServiceImpl(LightsCrud lightsCrud, Converters converter, MessagesHandler messagesHandler) {
         this.lightsCrud = lightsCrud;
-        this.kafka = kafka;
         this.converter = converter;
+        this.messagesHandler = messagesHandler;
     }
 
     @Autowired
@@ -68,11 +59,6 @@ public class LightsServiceImpl implements LightsService {
         this.requester = this.requesterBuilder.tcp(rsocketHost, rsocketPort);
     }
 
-    @Value("${target.topic.name:anyTopic}")
-    public void setTargetTopic(String targetTopic) {
-        this.targetTopic = targetTopic;
-    }
-
     @Override
     public Mono<LightBoundary> createLight(LightBoundary light) {
         light.setId(null);
@@ -86,31 +72,15 @@ public class LightsServiceImpl implements LightsService {
                 .flatMap(lightBoundary ->
                 {
                     DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightBoundary);
-
-
-                    ExternalReferenceBoundary externalReferenceBoundary = new ExternalReferenceBoundary()
-                            .setService("aaa")
-                            .setExternalServiceId("bbb");
-                    List<ExternalReferenceBoundary> externalReferenceBoundaries = List.of(externalReferenceBoundary);
-
-
-                    MessageBoundary messageBoundary = new MessageBoundary()
-                            .setMessageId("1")
-                            .setPublishedTimestamp(new Date())
-                            .setMessageType("Light")
-                            .setSummary("Light created")
-                            .setExternalReferences(externalReferenceBoundaries)
-                            .setMessageDetails(jackson.convertValue(deviceBoundary, jackson.getTypeFactory().constructMapType(
-                                    Map.class, String.class, Object.class)));
-
-                    System.err.println(messageBoundary);
-
+                    MessageBoundary messageBoundary = messagesHandler.createMessage(
+                            "Light",
+                            "Light created",
+                            deviceBoundary);
                     return this.requester
                             .route("registerDevice-req-resp")
                             .data(messageBoundary)
                             .retrieveMono(MessageBoundary.class)
                             .thenReturn(lightBoundary);
-
                 })
                 .log();
     }
@@ -132,7 +102,6 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Mono<LightBoundary> updateLight(LightBoundary light) {
-        // TODO: add the status to converter to deviceBoundary (get from entity)
         return lightsCrud.findById(light.getId())
                 .flatMap(lightEntity -> {
                     lightEntity.setLastUpdateTimestamp(new Date());
@@ -145,11 +114,17 @@ public class LightsServiceImpl implements LightsService {
                     return lightsCrud.save(lightEntity);
                 })
                 .flatMap(lightEntity -> {
+                    DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightEntity);
+                    MessageBoundary messageBoundary = messagesHandler.createMessage(
+                            "Light",
+                            "Light created",
+                            deviceBoundary);
+
                     LightBoundary lightBoundary = new LightBoundary(lightEntity);
                     return this.requester
                             .route("updateDevice-{id}-fnf", lightBoundary.getId())
-                            .data(this.converter.toDeviceBoundary(lightBoundary, new StatusBoundary(lightEntity.getStatus())))
-                            .retrieveMono(DeviceBoundary.class)
+                            .data(messageBoundary)
+                            .retrieveMono(MessageBoundary.class)
                             .thenReturn(lightBoundary);
                 })
                 .log();
