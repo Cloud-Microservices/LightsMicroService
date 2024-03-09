@@ -13,7 +13,7 @@ public class LightBoundary {
     private Date registrationTimestamp;
     private Date lastUpdateTimestamp;
     private String location;
-    private Integer manufacturerPowerInWatts;
+    private Double manufacturerPowerInWatts;
 
     public LightBoundary(LightEntity entity) {
         this.setId(entity.getId());
@@ -89,11 +89,11 @@ public class LightBoundary {
         this.location = location;
     }
 
-    public Integer getManufacturerPowerInWatts() {
+    public Double getManufacturerPowerInWatts() {
         return manufacturerPowerInWatts;
     }
 
-    public void setManufacturerPowerInWatts(Integer manufacturerPowerInWatts) {
+    public void setManufacturerPowerInWatts(Double manufacturerPowerInWatts) {
         this.manufacturerPowerInWatts = manufacturerPowerInWatts;
     }
 

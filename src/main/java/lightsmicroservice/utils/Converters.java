@@ -41,7 +41,7 @@ public class Converters {
         deviceBoundary.setLastUpdateTimestamp(lightBoundary.getLastUpdateTimestamp());
         deviceBoundary.setLocation(lightBoundary.getLocation());
         deviceBoundary.setManufacturerPowerInWatts(lightBoundary.getManufacturerPowerInWatts());
-        deviceBoundary.setAddionalAttributes(null);
+        deviceBoundary.setAdditionalAttributes(null);
 
         return deviceBoundary;
     }

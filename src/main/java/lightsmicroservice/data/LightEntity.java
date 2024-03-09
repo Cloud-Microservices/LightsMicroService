@@ -15,12 +15,12 @@ public class LightEntity {
     private Date lastUpdateTimestamp;
     private String location;
     private StatusEntity status;
-    private Integer manufacturerPowerInWatts;
+    private Double manufacturerPowerInWatts;
 
     public LightEntity() {
     }
 
-    public LightEntity(String id, String lightType, String alias, Date registrationTimestamp, Date lastUpdateTimestamp, String location, StatusEntity status, Integer manufacturerPowerInWatts) {
+    public LightEntity(String id, String lightType, String alias, Date registrationTimestamp, Date lastUpdateTimestamp, String location, StatusEntity status, Double manufacturerPowerInWatts) {
         this.id = id;
         this.lightType = lightType;
         this.alias = alias;
@@ -87,11 +87,11 @@ public class LightEntity {
         this.status = status;
     }
 
-    public Integer getManufacturerPowerInWatts() {
+    public Double getManufacturerPowerInWatts() {
         return manufacturerPowerInWatts;
     }
 
-    public void setManufacturerPowerInWatts(Integer manufacturerPowerInWatts) {
+    public void setManufacturerPowerInWatts(Double manufacturerPowerInWatts) {
         this.manufacturerPowerInWatts = manufacturerPowerInWatts;
     }
 

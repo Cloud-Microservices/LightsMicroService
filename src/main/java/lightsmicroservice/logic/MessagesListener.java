@@ -31,6 +31,10 @@ public class MessagesListener {
 		return stringInput->{
 			this.logger.trace("*** received: " + stringInput);
 		};
+
+		// TODO: 	Listen to kafka:
+		//  		decide which messages we need and how
+		//			decide how to operate the functions of the service
 /*
 		return stringInput->{
 			try {

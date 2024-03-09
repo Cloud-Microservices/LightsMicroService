@@ -11,14 +11,13 @@ public class DeviceBoundary {
     private Date registrationTimestamp;
     private Date lastUpdateTimestamp;
     private String location;
-    private Integer manufacturerPowerInWatts;
+    private Double manufacturerPowerInWatts;
     private StatusBoundary status;
-
-    private Object addionalAttributes;
+    private Object additionalAttributes;
 
     public DeviceBoundary() {}
 
-    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Integer manufacturerPowerInWatts, StatusBoundary status, Object addionalAttributes) {
+    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Double manufacturerPowerInWatts, StatusBoundary status, Object additionalAttributes) {
         this.id = id;
         this.type = type;
         this.subType = subType;
@@ -27,7 +26,7 @@ public class DeviceBoundary {
         this.location = location;
         this.manufacturerPowerInWatts = manufacturerPowerInWatts;
         this.status = status;
-        this.addionalAttributes = addionalAttributes;
+        this.additionalAttributes = additionalAttributes;
     }
 
     public String getId() {
@@ -78,11 +77,11 @@ public class DeviceBoundary {
         this.location = location;
     }
 
-    public int getManufacturerPowerInWatts() {
+    public Double getManufacturerPowerInWatts() {
         return manufacturerPowerInWatts;
     }
 
-    public void setManufacturerPowerInWatts(Integer manufacturerPowerInWatts) {
+    public void setManufacturerPowerInWatts(Double manufacturerPowerInWatts) {
         this.manufacturerPowerInWatts = manufacturerPowerInWatts;
     }
 
@@ -94,12 +93,12 @@ public class DeviceBoundary {
         this.status = status;
     }
 
-    public Object getAddionalAttributes() {
-        return addionalAttributes;
+    public Object getAdditionalAttributes() {
+        return additionalAttributes;
     }
 
-    public void setAddionalAttributes(Object addionalAttributes) {
-        this.addionalAttributes = addionalAttributes;
+    public void setAdditionalAttributes(Object additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
     }
 
     @Override
@@ -113,7 +112,7 @@ public class DeviceBoundary {
                 ", location='" + location + '\'' +
                 ", manufacturerPowerInWatts=" + manufacturerPowerInWatts +
                 ", status=" + status +
-                ", addionalAttributes=" + addionalAttributes +
+                ", additionalAttributes=" + additionalAttributes +
                 '}';
     }
 }

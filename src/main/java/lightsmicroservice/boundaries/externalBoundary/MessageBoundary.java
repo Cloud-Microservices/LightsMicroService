@@ -9,7 +9,7 @@ public class MessageBoundary {
     private String messageType; //for example- deviceNotification
     private String summary; //what happen --> device {deviceId} has been turned on/off
     private List<ExternalReferenceBoundary> externalReferences;
-    private Map<String, Object> messageDetails; // the map will be the deviceBoundary
+    private Map<String, DeviceBoundary> messageDetails; // the map will be the deviceBoundary
 
     public MessageBoundary() {}
 
@@ -57,11 +57,11 @@ public class MessageBoundary {
         return this;
     }
 
-    public Map<String, Object> getMessageDetails() {
+    public Map<String, DeviceBoundary> getMessageDetails() {
         return messageDetails;
     }
 
-    public MessageBoundary setMessageDetails(Map<String, Object> messageDetails) {
+    public MessageBoundary setMessageDetails(Map<String, DeviceBoundary> messageDetails) {
         this.messageDetails = messageDetails;
         return this;
     }

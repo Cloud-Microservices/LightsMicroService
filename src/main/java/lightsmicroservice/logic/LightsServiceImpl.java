@@ -85,19 +85,26 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
+    //TODO: Ready - need to check
     @Override
     public Mono<Void> deleteLight(String id) {
         return this.requester
                 .route("deleteDeviceById-{id}-fnf", id)
-                .retrieveMono(DeviceBoundary.class)
-                .then()
+                .send()
                 .then(this.lightsCrud.deleteById(id));
     }
 
-    //TODO: check if we need to update Rom because it will delete all the devices he has.
+    //TODO: Ready - need to check
     @Override
     public Mono<Void> deleteAll() {
-        return this.lightsCrud.deleteAll();
+        return this.lightsCrud.findAll()
+                .flatMap(lightEntity ->
+                        this.requester
+                                .route("deleteDeviceById-{id}-fnf", lightEntity.getId())
+                                .send()
+                                .thenReturn(lightEntity)
+                )
+                .then(this.lightsCrud.deleteAll());
     }
 
     @Override
@@ -117,7 +124,7 @@ public class LightsServiceImpl implements LightsService {
                     DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightEntity);
                     MessageBoundary messageBoundary = messagesHandler.createMessage(
                             "Light",
-                            "Light created",
+                            "Light updated",
                             deviceBoundary);
 
                     LightBoundary lightBoundary = new LightBoundary(lightEntity);
@@ -130,6 +137,7 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
+    //TODO: Ready - need to check
     @Override
     public Mono<LightStatusBoundary> updateSpecificLightStatus(LightStatusBoundary lightStatus) {
         return lightsCrud.findById(lightStatus.getId())
@@ -137,22 +145,24 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, lightStatus.getStatus());
                     return lightsCrud.save(newLightEntity);
                 })
-                .map(LightStatusBoundary::new)
-                .flatMap(LightStatusBoundary ->
-                        this.requester
-                                .route("updateDeviceStatus-{id}-fnf", LightStatusBoundary.getId())
-                                .data(lightStatus.getStatus())
-                                .retrieveMono(DeviceBoundary.class)
-                                .thenReturn(LightStatusBoundary)
-                )
+                .flatMap(lightEntity -> {
+                    DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightEntity);
+                    MessageBoundary messageBoundary = messagesHandler.createMessage(
+                            "Light",
+                            "Light Status Changed",
+                            deviceBoundary);
+
+                    LightStatusBoundary lightStatusBoundary = new LightStatusBoundary(lightEntity);
+                    return this.requester
+                            .route("updateDeviceStatus-{id}-fnf", lightStatusBoundary.getId())
+                            .data(messageBoundary)
+                            .send()
+                            .thenReturn(lightStatusBoundary);
+                })
                 .log();
     }
 
-    //TODO: get from Rom all the devices that their location is : *****  (getDevicesByExample-req-stream),
-    // that in a for loop we will active the updateSpecificLightStatus
-    // .route("updateDeviceStatus-{id}-fnf", LightStatusBoundary.getId())
-    // .data(lightStatus.getStatus())
-    // .retrieveMono(DeviceBoundary.class)
+    //TODO: Ready - need to check
     @Override
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(LocationStatusBoundary locationStatusBoundary) {
         return lightsCrud.findAllByLocation(locationStatusBoundary.getLocation())
@@ -160,11 +170,24 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, locationStatusBoundary.getStatus());
                     return lightsCrud.save(newLightEntity);
                 })
-                .map(LightStatusBoundary::new)
+                .flatMap(lightEntity -> {
+                    DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightEntity);
+                    MessageBoundary messageBoundary = messagesHandler.createMessage(
+                            "Light",
+                            "Light Status Changed",
+                            deviceBoundary);
+
+                    LightStatusBoundary lightStatusBoundary = new LightStatusBoundary(lightEntity);
+                    return this.requester
+                            .route("updateDeviceStatus-{id}-fnf", lightStatusBoundary.getId())
+                            .data(messageBoundary)
+                            .send()
+                            .thenReturn(lightStatusBoundary);
+                })
                 .log();
     }
 
-    //TODO: same as above - the difference is to get all the devices and to update them, and to by location (getAllDevices-req-stream)
+    //TODO: Ready - need to check
     @Override
     public Flux<LightStatusBoundary> updateAllLightsStatus(StatusBoundary statusBoundary) {
 
@@ -173,7 +196,20 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, statusBoundary);
                     return lightsCrud.save(newLightEntity);
                 })
-                .map(LightStatusBoundary::new)
+                .flatMap(lightEntity -> {
+                    DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightEntity);
+                    MessageBoundary messageBoundary = messagesHandler.createMessage(
+                            "Light",
+                            "Light Status Changed",
+                            deviceBoundary);
+
+                    LightStatusBoundary lightStatusBoundary = new LightStatusBoundary(lightEntity);
+                    return this.requester
+                            .route("updateDeviceStatus-{id}-fnf", lightStatusBoundary.getId())
+                            .data(messageBoundary)
+                            .send()
+                            .thenReturn(lightStatusBoundary);
+                })
                 .log();
     }
 
