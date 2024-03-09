@@ -27,7 +27,7 @@ public class LightsServiceImpl implements LightsService {
     private RSocketRequester requester;
     private RSocketRequester.Builder requesterBuilder;
     private String rsocketHost; //ip address of the one we want to send the message to --> local host
-    private int rsocketPort; //port number of the one we want to send the message to --> Rom 7071
+    private int rsocketPort; //port number of the one we want to send the message to --> Rom 6080
     private StreamBridge kafka;
 
     private ObjectMapper jackson;
@@ -75,8 +75,10 @@ public class LightsServiceImpl implements LightsService {
         deviceBoundary.setLocation(lightBoundary.getLocation());
         deviceBoundary.setManufacturerPowerInWatts(lightBoundary.getManufacturerPowerInWatts());
 
-        //TODO: check if we need to add the status
-        StatusBoundary statusBoundary = new StatusBoundary(new StatusEntity());
+        //TODO: check if we need to add the status: when it is for createBoundary it is better with setDefaultStatus,
+        // but for other options we need to add the status from the original.
+        // we need to go to the DB to take the status of the light entity and to set it here.
+        StatusBoundary statusBoundary = new StatusBoundary(new StatusEntity().setDefaultStatus());
         deviceBoundary.setStatus(statusBoundary);
         return Mono.just(deviceBoundary);
     }
@@ -158,6 +160,11 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
+    //TODO: get from Rom all the devices that their location is : *****  (getDevicesByExample-req-stream),
+    // that in a for loop we will active the updateSpecificLightStatus
+    // .route("updateDeviceStatus-{id}-fnf", LightStatusBoundary.getId())
+    // .data(lightStatus.getStatus())
+    // .retrieveMono(DeviceBoundary.class)
     @Override
     public Flux<LightStatusBoundary> updateLightsStatusByLocation(LocationStatusBoundary locationStatusBoundary) {
         return lightsCrud.findAllByLocation(locationStatusBoundary.getLocation())
@@ -169,6 +176,7 @@ public class LightsServiceImpl implements LightsService {
                 .log();
     }
 
+    //TODO: same as above - the difference is to get all the devices and to update them, and to by location (getAllDevices-req-stream)
     @Override
     public Flux<LightStatusBoundary> updateAllLightsStatus(StatusBoundary statusBoundary) {
 

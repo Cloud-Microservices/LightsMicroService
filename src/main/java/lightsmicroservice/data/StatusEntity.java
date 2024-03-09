@@ -13,8 +13,7 @@ public class StatusEntity {
         this.isOn = isOn;
     }
 
-    public StatusEntity() {
-    }
+    public StatusEntity(){}
 
     public StatusEntity setDefaultStatus() {
         this.brightness = 100;
