@@ -1,4 +1,4 @@
-package lightsmicroservice.logic;
+package lightsmicroservice.logic.messages;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
@@ -29,8 +29,6 @@ public class MessagesHandler {
                 .setMessageType(messageType)
                 .setSummary(summary)
                 .setMessageDetails(new HashMap<>(Map.of("device", deviceBoundary)));
-
-        System.err.println("MessageBoundary: " + message);
 
         return message;
     }

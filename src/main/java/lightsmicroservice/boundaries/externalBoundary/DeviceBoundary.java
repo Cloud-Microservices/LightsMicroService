@@ -3,6 +3,7 @@ package lightsmicroservice.boundaries.externalBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 
 import java.util.Date;
+import java.util.Map;
 
 public class DeviceBoundary {
     private String id;
@@ -13,11 +14,11 @@ public class DeviceBoundary {
     private String location;
     private Double manufacturerPowerInWatts;
     private StatusBoundary status;
-    private Object additionalAttributes;
+    private Map<String, Object> additionalAttributes;
 
     public DeviceBoundary() {}
 
-    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Double manufacturerPowerInWatts, StatusBoundary status, Object additionalAttributes) {
+    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Double manufacturerPowerInWatts, StatusBoundary status, Map<String, Object> additionalAttributes) {
         this.id = id;
         this.type = type;
         this.subType = subType;
@@ -93,12 +94,16 @@ public class DeviceBoundary {
         this.status = status;
     }
 
-    public Object getAdditionalAttributes() {
+    public Map<String, Object> getAdditionalAttributes() {
         return additionalAttributes;
     }
 
-    public void setAdditionalAttributes(Object additionalAttributes) {
+    public void setAdditionalAttributes(Map<String, Object> additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
+    }
+
+    public boolean isLightDevice() {
+        return "Light".equals(this.type);
     }
 
     @Override

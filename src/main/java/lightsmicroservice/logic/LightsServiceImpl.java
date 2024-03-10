@@ -1,6 +1,5 @@
 package lightsmicroservice.logic;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lightsmicroservice.boundaries.LightBoundary;
 import lightsmicroservice.boundaries.LightStatusBoundary;
@@ -10,6 +9,7 @@ import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
 import lightsmicroservice.boundaries.externalBoundary.MessageBoundary;
 import lightsmicroservice.dal.LightsCrud;
 import lightsmicroservice.data.LightEntity;
+import lightsmicroservice.logic.messages.MessagesHandler;
 import lightsmicroservice.utils.Converters;
 import lightsmicroservice.utils.Validators;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,6 @@ public class LightsServiceImpl implements LightsService {
     private RSocketRequester.Builder requesterBuilder;
     private String rsocketHost;
     private int rsocketPort;
-    private ObjectMapper jackson;
     private MessagesHandler messagesHandler;
     private Converters converter;
 
@@ -55,7 +54,6 @@ public class LightsServiceImpl implements LightsService {
 
     @PostConstruct
     public void init() {
-        this.jackson = new ObjectMapper();
         this.requester = this.requesterBuilder.tcp(rsocketHost, rsocketPort);
     }
 
