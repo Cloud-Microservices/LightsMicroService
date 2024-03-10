@@ -6,9 +6,9 @@ public class StatusEntity {
     private Integer brightness;
     private int[] colorRGB;
     private Boolean isOn;
-    private float currentPowerInWatts;
+    private Double currentPowerInWatts;
 
-    public StatusEntity(Integer brightness, int[] colorRGB, Boolean isOn, float currentPowerInWatts) {
+    public StatusEntity(Integer brightness, int[] colorRGB, Boolean isOn, Double currentPowerInWatts) {
         this.brightness = brightness;
         this.colorRGB = colorRGB;
         this.isOn = isOn;
@@ -21,7 +21,7 @@ public class StatusEntity {
         this.brightness = 100;
         this.colorRGB = new int[]{255,255,255};
         this.isOn = false;
-        this.currentPowerInWatts = 0;
+        this.currentPowerInWatts = 0.0;
         return this;
     }
 
@@ -52,11 +52,11 @@ public class StatusEntity {
         return this;
     }
 
-    public float getCurrentPowerInWatts() {
+    public Double getCurrentPowerInWatts() {
         return currentPowerInWatts;
     }
 
-    public StatusEntity setCurrentPowerInWatts(float currentPowerInWatts) {
+    public StatusEntity setCurrentPowerInWatts(Double currentPowerInWatts) {
         this.currentPowerInWatts = currentPowerInWatts;
         return this;
     }

@@ -19,7 +19,7 @@ public class MessagesHandler {
         this.serviceName = serviceName;
     }
 
-    public MessageBoundary createMessage(String summary, String messageType, DeviceBoundary deviceBoundary) {
+    public MessageBoundary createMessage(String messageType, String summary, DeviceBoundary deviceBoundary) {
         MessageBoundary message = new MessageBoundary();
         message.setMessageId(UUID.randomUUID().toString())
                 .setPublishedTimestamp(new Date())

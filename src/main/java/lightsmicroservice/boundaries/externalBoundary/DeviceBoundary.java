@@ -102,9 +102,6 @@ public class DeviceBoundary {
         this.additionalAttributes = additionalAttributes;
     }
 
-    public boolean isLightDevice() {
-        return "Light".equals(this.type);
-    }
 
     @Override
     public String toString() {

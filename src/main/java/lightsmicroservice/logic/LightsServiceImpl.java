@@ -71,8 +71,8 @@ public class LightsServiceImpl implements LightsService {
                 {
                     DeviceBoundary deviceBoundary = this.converter.toDeviceBoundary(lightBoundary);
                     MessageBoundary messageBoundary = messagesHandler.createMessage(
-                            "Light",
-                            "Light created",
+                            "deviceNotification",
+                            "Light device created.",
                             deviceBoundary);
                     return this.requester
                             .route("registerDevice-req-resp")
@@ -240,6 +240,9 @@ public class LightsServiceImpl implements LightsService {
             }
             if (Validators.isColorRGBValid(newStatus.getColorRGB())) {
                 lightEntity.getStatus().setColorRGB(newStatus.getColorRGB());
+            }
+            if (newStatus.getCurrentPowerInWatts() != null && newStatus.getCurrentPowerInWatts() > 0) {
+                lightEntity.getStatus().setCurrentPowerInWatts(newStatus.getCurrentPowerInWatts());
             }
         }
         return lightEntity;

@@ -6,10 +6,10 @@ public class MessageBoundary {
 
     private String messageId;
     private Date publishedTimestamp;
-    private String messageType; //for example- deviceNotification
-    private String summary; //what happen --> device {deviceId} has been turned on/off
+    private String messageType;
+    private String summary;
     private List<ExternalReferenceBoundary> externalReferences;
-    private Map<String, DeviceBoundary> messageDetails; // the map will be the deviceBoundary
+    private Map<String, DeviceBoundary> messageDetails;
 
     public MessageBoundary() {}
 

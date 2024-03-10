@@ -44,15 +44,27 @@ public class MessageListener {
     public Consumer<String> messageSink() {
         return message -> {
             try {
+                logger.debug("Got message from kafka: " + message);
                 MessageBoundary receivedMessage = objectMapper.readValue(message, MessageBoundary.class);
-                if(isValidMessage(receivedMessage))
-                    if(!isMyOwnMessage(receivedMessage))
-                        processMessage(receivedMessage);
-                    else
-                        logger.info("Message is from this service, ignoring it");
-                else
-                    logger.error("Error processing message: cannot read device details" );
-            } catch (Exception e) {
+
+                if(!isValidMessage(receivedMessage)) {
+                    logger.error("Error processing message: cannot read device details");
+                    return;
+                }
+                if (!receivedMessage.getMessageType().equals("deviceNotification")) {
+                    logger.debug("Message is not a device notification, ignoring it");
+                    return;
+                }
+                if (isMyOwnMessage(receivedMessage)) {
+                    logger.debug("Message is from this service, ignoring it");
+                    return;
+                }
+
+                logger.info("Handling message from kafka...");
+                processMessage(receivedMessage);
+
+            }
+            catch (Exception e) {
                 logger.error("Error processing message: " + e.getMessage());
             }
         };
@@ -70,17 +82,17 @@ public class MessageListener {
 
     private void processMessage(MessageBoundary message) {
         DeviceBoundary device = objectMapper.convertValue(message.getMessageDetails().get("device"), DeviceBoundary.class);
-        if (device.isLightDevice()) {
-            switch (message.getMessageType().toLowerCase()) {
-                case "create" -> {
-                    logger.info("Got create light device from kafka");
-                }
-                case "remove" -> {
-                    logger.info("Got remove light device from kafka");
-                }
-                case "update" -> {
+        if (device.getType().equals("Light")) {
+            String msg = message.getSummary().toLowerCase();
+            if (msg.contains("create"))
+                logger.info("Got create light device from kafka");
+            else if (msg.contains("delete") || msg.contains("remove"))
+                logger.info("Got remove light device from kafka");
+            else if (msg.contains("update")) {
+                if(msg.contains("status"))
+                    logger.info("Got update light status from kafka");
+                else
                     logger.info("Got update light device from kafka");
-                }
             }
         } else {
             logger.error("Device is not a light device.");

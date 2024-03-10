@@ -8,8 +8,7 @@ public class StatusBoundary {
     private Integer brightness;
     private int[] colorRGB;
     private Boolean isOn;
-
-    private float currentPowerInWatts;
+    private Double currentPowerInWatts;
 
     public StatusBoundary() {
     }
@@ -29,7 +28,7 @@ public class StatusBoundary {
 
     }
 
-    public StatusBoundary(int brightness, int[] colorRGB, boolean isOn, float currentPowerInWatts) {
+    public StatusBoundary(int brightness, int[] colorRGB, boolean isOn, Double currentPowerInWatts) {
         this.brightness = brightness;
         this.colorRGB = colorRGB;
         this.isOn = isOn;
@@ -60,11 +59,11 @@ public class StatusBoundary {
         isOn = on;
     }
 
-    public float getCurrentPowerInWatts() {
+    public Double getCurrentPowerInWatts() {
         return currentPowerInWatts;
     }
 
-    public void setCurrentPowerInWatts(float currentPowerInWatts) {
+    public void setCurrentPowerInWatts(Double currentPowerInWatts) {
         this.currentPowerInWatts = currentPowerInWatts;
     }
 
