@@ -1,7 +1,7 @@
 package lightsmicroservice.utils;
 
+import lightsmicroservice.boundaries.EnergyStatusBoundary;
 import lightsmicroservice.boundaries.LightBoundary;
-import lightsmicroservice.boundaries.StatusBoundary;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
 import lightsmicroservice.data.LightEntity;
 import lightsmicroservice.data.StatusEntity;
@@ -13,21 +13,15 @@ public class Converters {
     public DeviceBoundary toDeviceBoundary(LightEntity lightEntity) {
         DeviceBoundary deviceBoundary = setDeviceBoundaryFields(new LightBoundary(lightEntity));
 
-        deviceBoundary.setStatus(new StatusBoundary(lightEntity.getStatus()));
+        deviceBoundary.setStatus(new EnergyStatusBoundary(lightEntity.getStatus()));
+        System.err.println(deviceBoundary);
         return deviceBoundary;
     }
 
     public DeviceBoundary toDeviceBoundary(LightBoundary lightBoundary) {
         DeviceBoundary deviceBoundary = setDeviceBoundaryFields(lightBoundary);
 
-        StatusBoundary statusBoundary = new StatusBoundary(new StatusEntity().setDefaultStatus());
-        deviceBoundary.setStatus(statusBoundary);
-        return deviceBoundary;
-    }
-
-    public DeviceBoundary toDeviceBoundary(LightBoundary lightBoundary, StatusBoundary statusBoundary) {
-
-        DeviceBoundary deviceBoundary = setDeviceBoundaryFields(lightBoundary);
+        EnergyStatusBoundary statusBoundary = new EnergyStatusBoundary(new StatusEntity().setDefaultStatus());
         deviceBoundary.setStatus(statusBoundary);
         return deviceBoundary;
     }

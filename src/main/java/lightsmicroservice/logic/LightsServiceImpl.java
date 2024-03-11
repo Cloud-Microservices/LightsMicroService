@@ -1,10 +1,7 @@
 package lightsmicroservice.logic;
 
 import jakarta.annotation.PostConstruct;
-import lightsmicroservice.boundaries.LightBoundary;
-import lightsmicroservice.boundaries.LightStatusBoundary;
-import lightsmicroservice.boundaries.LocationStatusBoundary;
-import lightsmicroservice.boundaries.StatusBoundary;
+import lightsmicroservice.boundaries.*;
 import lightsmicroservice.boundaries.externalBoundary.DeviceBoundary;
 import lightsmicroservice.boundaries.externalBoundary.MessageBoundary;
 import lightsmicroservice.dal.LightsCrud;
@@ -20,6 +17,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class LightsServiceImpl implements LightsService {
@@ -59,7 +58,7 @@ public class LightsServiceImpl implements LightsService {
 
     @Override
     public Mono<LightBoundary> createLight(LightBoundary light) {
-        light.setId(null);
+        light.setId(UUID.randomUUID().toString());
         Date date = new Date();
         light.setLastUpdateTimestamp(date);
         light.setRegistrationTimestamp(date);
@@ -140,14 +139,8 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, lightStatus.getStatus());
                     return lightsCrud.save(newLightEntity);
                 })
+                .flatMap(this::sendUpdateLightStatusToDeviceManager)
                 .map(LightStatusBoundary::new)
-                .flatMap(LightStatus ->
-                     this.requester
-                            .route("updateDeviceStatus-{id}-fnf", LightStatus.getId())
-                            .data(LightStatus.getStatus())
-                            .send()
-                            .thenReturn(LightStatus)
-                )
                 .log();
     }
 
@@ -158,14 +151,8 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, locationStatusBoundary.getStatus());
                     return lightsCrud.save(newLightEntity);
                 })
+                .flatMap(this::sendUpdateLightStatusToDeviceManager)
                 .map(LightStatusBoundary::new)
-                .flatMap(LightStatus ->
-                        this.requester
-                                .route("updateDeviceStatus-{id}-fnf", LightStatus.getId())
-                                .data(LightStatus.getStatus())
-                                .send()
-                                .thenReturn(LightStatus)
-                )
                 .log();
     }
 
@@ -177,14 +164,8 @@ public class LightsServiceImpl implements LightsService {
                     LightEntity newLightEntity = updateLightStatus(lightEntity, statusBoundary);
                     return lightsCrud.save(newLightEntity);
                 })
+                .flatMap(this::sendUpdateLightStatusToDeviceManager)
                 .map(LightStatusBoundary::new)
-                .flatMap(LightStatus ->
-                        this.requester
-                                .route("updateDeviceStatus-{id}-fnf", LightStatus.getId())
-                                .data(LightStatus.getStatus())
-                                .send()
-                                .thenReturn(LightStatus)
-                )
                 .log();
     }
 
@@ -241,10 +222,44 @@ public class LightsServiceImpl implements LightsService {
             if (Validators.isColorRGBValid(newStatus.getColorRGB())) {
                 lightEntity.getStatus().setColorRGB(newStatus.getColorRGB());
             }
-            if (newStatus.getCurrentPowerInWatts() != null && newStatus.getCurrentPowerInWatts() > 0) {
-                lightEntity.getStatus().setCurrentPowerInWatts(newStatus.getCurrentPowerInWatts());
+
+            if(newStatus.getIsOn() != null && lightEntity.getStatus().getIsOn()) {
+                double powerInWatts = generateRandomConsumption(lightEntity.getLightType());
+                lightEntity.getStatus().setCurrentPowerInWatts(powerInWatts);
+            } else {
+                lightEntity.getStatus().setCurrentPowerInWatts(0.0);
             }
         }
+
         return lightEntity;
+    }
+
+    private double generateRandomConsumption(String lightType) {
+        if (lightType == null || lightType.isBlank()) {
+            return 0.0;
+        }
+
+        lightType = lightType.toLowerCase();
+        Random rand = new Random();
+
+        return switch (lightType) {
+            case "halogen" -> // Halogen Bulbs
+                    rand.nextDouble() * (100 - 20) + 20;
+            case "fluorescent" -> // Compact Fluorescent Lamps (CFLs)
+                    rand.nextDouble() * (30 - 5) + 5;
+            case "led" -> // LED Bulbs
+                    rand.nextDouble() * (20 - 3) + 3;
+            case "projector" -> // Projectors
+                    rand.nextDouble() * (500 - 100) + 100;
+            default -> 0.0; // Default value
+        };
+    }
+
+    private Mono<LightEntity> sendUpdateLightStatusToDeviceManager(LightEntity lightEntity) {
+        return this.requester
+                .route("updateDeviceStatus-{id}-fnf", lightEntity.getId())
+                .data(new EnergyStatusBoundary(lightEntity.getStatus()))
+                .send()
+                .thenReturn(lightEntity);
     }
 }

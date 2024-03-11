@@ -1,5 +1,6 @@
 package lightsmicroservice.boundaries.externalBoundary;
 
+import lightsmicroservice.boundaries.EnergyStatusBoundary;
 import lightsmicroservice.boundaries.StatusBoundary;
 
 import java.util.Date;
@@ -13,12 +14,12 @@ public class DeviceBoundary {
     private Date lastUpdateTimestamp;
     private String location;
     private Double manufacturerPowerInWatts;
-    private StatusBoundary status;
+    private EnergyStatusBoundary status;
     private Map<String, Object> additionalAttributes;
 
     public DeviceBoundary() {}
 
-    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Double manufacturerPowerInWatts, StatusBoundary status, Map<String, Object> additionalAttributes) {
+    public DeviceBoundary(String id, String type, String subType, Date registrationTimestamp, Date lastUpdateTimestamp, String location, Double manufacturerPowerInWatts, EnergyStatusBoundary status, Map<String, Object> additionalAttributes) {
         this.id = id;
         this.type = type;
         this.subType = subType;
@@ -90,7 +91,7 @@ public class DeviceBoundary {
         return status;
     }
 
-    public void setStatus(StatusBoundary status) {
+    public void setStatus(EnergyStatusBoundary status) {
         this.status = status;
     }
 

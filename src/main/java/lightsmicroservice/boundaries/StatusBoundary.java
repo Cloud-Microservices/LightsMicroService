@@ -8,7 +8,6 @@ public class StatusBoundary {
     private Integer brightness;
     private int[] colorRGB;
     private Boolean isOn;
-    private Double currentPowerInWatts;
 
     public StatusBoundary() {
     }
@@ -16,23 +15,20 @@ public class StatusBoundary {
         this.setBrightness(entity.getBrightness());
         this.setIsOn(entity.getIsOn());
         this.setColorRGB(entity.getColorRGB());
-        this.setCurrentPowerInWatts(entity.getCurrentPowerInWatts());
     }
     public StatusEntity toEntity() {
         StatusEntity rv = new StatusEntity();
         rv.setBrightness(this.getBrightness());
         rv.setIsOn(this.getIsOn());
         rv.setColorRGB(this.getColorRGB());
-        rv.setCurrentPowerInWatts(this.getCurrentPowerInWatts());
         return rv;
 
     }
 
-    public StatusBoundary(int brightness, int[] colorRGB, boolean isOn, Double currentPowerInWatts) {
+    public StatusBoundary(int brightness, int[] colorRGB, boolean isOn) {
         this.brightness = brightness;
         this.colorRGB = colorRGB;
         this.isOn = isOn;
-        this.currentPowerInWatts = currentPowerInWatts;
     }
 
     public int[] getColorRGB() {
@@ -59,21 +55,12 @@ public class StatusBoundary {
         isOn = on;
     }
 
-    public Double getCurrentPowerInWatts() {
-        return currentPowerInWatts;
-    }
-
-    public void setCurrentPowerInWatts(Double currentPowerInWatts) {
-        this.currentPowerInWatts = currentPowerInWatts;
-    }
-
     @Override
     public String toString() {
         return "StatusBoundary{" +
                 "brightness=" + brightness +
                 ", colorRGB=" + Arrays.toString(colorRGB) +
                 ", isOn=" + isOn +
-                ", currentPowerInWatts=" + currentPowerInWatts +
                 '}';
     }
 }
